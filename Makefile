@@ -16,5 +16,12 @@ build/$(UNAME_S):
 	@rm -rf bin/*
 	@GOOS=$(UNAME_S) CGO_ENABLED=1 GO111MODULE=on go build -o $(BUILD_DIR)/$(SERVICE_NAME).$(UNAME_S) github.com/ContextLogic/$(SERVICE_NAME)
 
+vendor: go.mod go.sum ## pull the vendor pkgs for deps
+	@GO111MODULE=on go mod vendor
+
+docker:
+	@docker build --build-arg ITA_JOB_TOKEN=${GITLAB_ACCESS_TOKEN} \
+		--build-arg ITA_PROJECT_NAME=$(SERVICE_NAME) -f Dockerfile.local -t contextlogic/$(SERVICE_NAME) .
+
 clean: ## clean ups
 	@rm -rf $(BUILD_DIR)
