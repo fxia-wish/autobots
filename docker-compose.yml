@@ -1,0 +1,18 @@
+version: "3"
+services:
+  server:
+    build:
+      context: .
+      args:
+        - GITLAB_ACCESS_TOKEN
+        - ITA_PROJECT_NAME=hello-service
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    volumes:
+      - ./config/service.json:/config/service.json
+    command:
+      - /bin/hello-service
+      - server
+      - -c
+      - /config/service.json

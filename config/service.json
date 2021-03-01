@@ -1,0 +1,26 @@
+{
+  "base_config": {
+    "service_name": "hello-service",
+    "http_port": 8080,
+    "server_config": {
+      "grpc_port": 8081
+    },
+    "shutdown_timeout": "1s",
+    "shutdown_delay": "1s",
+    "client_config": {
+      "proxy_address": "localhost:10000",
+      "use_proxy": false,
+      "service_addresses": {
+        "hello-service-dev": "localhost:8081"
+      }
+    }
+  },
+  "sentry_config": {
+    "sentry_dsn": "https://3dbc7cc6a747414a926ccdb97d05cd53@sentry.infra.wish.com/52",
+    "environment": "local",
+    "hide_panic_msg": false
+  },
+  "app_config": {
+    "enable_reflection": true
+  }
+}

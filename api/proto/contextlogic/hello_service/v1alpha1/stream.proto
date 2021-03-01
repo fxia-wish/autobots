@@ -1,0 +1,42 @@
+syntax = "proto3";
+package contextlogic.hello_service.v1alpha1;
+
+import "google/api/annotations.proto";
+
+option go_package = "contextlogic/hello_service/v1alpha1";
+
+message StreamDataRequest {
+    StreamData streamData = 1;
+}
+
+message StreamData {
+    int64 id = 1;
+    double value = 2;
+}
+
+message StreamDataResponse {
+    StreamData streamData = 1;
+}
+
+service Stream {
+    rpc BiDirectStream(stream StreamDataRequest) returns (stream StreamDataResponse){
+        option (google.api.http) = {
+          post: "/v1/stream/bidirect"
+          body: "*"
+        };
+    }
+
+    rpc ClientStream(stream StreamDataRequest) returns (StreamDataResponse) {
+        option (google.api.http) = {
+          post: "/v1/stream/client"
+          body: "*"
+        };
+    }
+
+    rpc ServerStream(StreamDataRequest) returns (stream StreamDataResponse) {
+        option (google.api.http) = {
+          post: "/v1/stream/server"
+          body: "*"
+        };
+    }
+}
