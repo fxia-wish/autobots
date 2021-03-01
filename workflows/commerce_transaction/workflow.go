@@ -35,7 +35,7 @@ func NewCommerceTransactionWorkflow(clients *clients.Clients) *CommerceTransacti
 		Clients: clients,
 		Activities: &CommerceTransactionActivities{
 			Clients: clients,
-			Root:    path.Join(path.Dir(filename), "../../.."),
+			Root:    path.Join(path.Dir(filename), "../.."),
 		},
 	}
 }
