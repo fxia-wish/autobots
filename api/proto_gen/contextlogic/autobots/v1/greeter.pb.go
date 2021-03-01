@@ -2,7 +2,7 @@
 // versions:
 // 	protoc-gen-go v1.22.0-devel
 // 	protoc        v3.11.2
-// source: contextlogic/hello_service/v1/greeter.proto
+// source: contextlogic/autobots/v1/greeter.proto
 
 package v1
 
@@ -67,11 +67,11 @@ func (x Greet_Message_Language) String() string {
 }
 
 func (Greet_Message_Language) Descriptor() protoreflect.EnumDescriptor {
-	return file_contextlogic_hello_service_v1_greeter_proto_enumTypes[0].Descriptor()
+	return file_contextlogic_autobots_v1_greeter_proto_enumTypes[0].Descriptor()
 }
 
 func (Greet_Message_Language) Type() protoreflect.EnumType {
-	return &file_contextlogic_hello_service_v1_greeter_proto_enumTypes[0]
+	return &file_contextlogic_autobots_v1_greeter_proto_enumTypes[0]
 }
 
 func (x Greet_Message_Language) Number() protoreflect.EnumNumber {
@@ -80,7 +80,7 @@ func (x Greet_Message_Language) Number() protoreflect.EnumNumber {
 
 // Deprecated: Use Greet_Message_Language.Descriptor instead.
 func (Greet_Message_Language) EnumDescriptor() ([]byte, []int) {
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP(), []int{0, 0, 0}
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP(), []int{0, 0, 0}
 }
 
 type Greet struct {
@@ -97,7 +97,7 @@ type Greet struct {
 func (x *Greet) Reset() {
 	*x = Greet{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[0]
+		mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[0]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -110,7 +110,7 @@ func (x *Greet) String() string {
 func (*Greet) ProtoMessage() {}
 
 func (x *Greet) ProtoReflect() protoreflect.Message {
-	mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[0]
+	mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[0]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -123,7 +123,7 @@ func (x *Greet) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Greet.ProtoReflect.Descriptor instead.
 func (*Greet) Descriptor() ([]byte, []int) {
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP(), []int{0}
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP(), []int{0}
 }
 
 func (x *Greet) GetId() int64 {
@@ -165,7 +165,7 @@ type Greets struct {
 func (x *Greets) Reset() {
 	*x = Greets{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[1]
+		mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[1]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -178,7 +178,7 @@ func (x *Greets) String() string {
 func (*Greets) ProtoMessage() {}
 
 func (x *Greets) ProtoReflect() protoreflect.Message {
-	mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[1]
+	mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[1]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -191,7 +191,7 @@ func (x *Greets) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Greets.ProtoReflect.Descriptor instead.
 func (*Greets) Descriptor() ([]byte, []int) {
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP(), []int{1}
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP(), []int{1}
 }
 
 func (x *Greets) GetGreets() []*Greet {
@@ -212,7 +212,7 @@ type CreateGreetRequest struct {
 func (x *CreateGreetRequest) Reset() {
 	*x = CreateGreetRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[2]
+		mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[2]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -225,7 +225,7 @@ func (x *CreateGreetRequest) String() string {
 func (*CreateGreetRequest) ProtoMessage() {}
 
 func (x *CreateGreetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[2]
+	mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[2]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -238,7 +238,7 @@ func (x *CreateGreetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGreetRequest.ProtoReflect.Descriptor instead.
 func (*CreateGreetRequest) Descriptor() ([]byte, []int) {
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP(), []int{2}
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP(), []int{2}
 }
 
 func (x *CreateGreetRequest) GetGreet() *Greet {
@@ -259,7 +259,7 @@ type CreateGreetResponse struct {
 func (x *CreateGreetResponse) Reset() {
 	*x = CreateGreetResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[3]
+		mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[3]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -272,7 +272,7 @@ func (x *CreateGreetResponse) String() string {
 func (*CreateGreetResponse) ProtoMessage() {}
 
 func (x *CreateGreetResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[3]
+	mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[3]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -285,7 +285,7 @@ func (x *CreateGreetResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use CreateGreetResponse.ProtoReflect.Descriptor instead.
 func (*CreateGreetResponse) Descriptor() ([]byte, []int) {
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP(), []int{3}
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP(), []int{3}
 }
 
 func (x *CreateGreetResponse) GetGreetID() int64 {
@@ -304,7 +304,7 @@ type ReadAllGreetsRequest struct {
 func (x *ReadAllGreetsRequest) Reset() {
 	*x = ReadAllGreetsRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[4]
+		mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[4]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -317,7 +317,7 @@ func (x *ReadAllGreetsRequest) String() string {
 func (*ReadAllGreetsRequest) ProtoMessage() {}
 
 func (x *ReadAllGreetsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[4]
+	mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[4]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -330,7 +330,7 @@ func (x *ReadAllGreetsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadAllGreetsRequest.ProtoReflect.Descriptor instead.
 func (*ReadAllGreetsRequest) Descriptor() ([]byte, []int) {
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP(), []int{4}
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP(), []int{4}
 }
 
 type ReadAllGreetsResponse struct {
@@ -344,7 +344,7 @@ type ReadAllGreetsResponse struct {
 func (x *ReadAllGreetsResponse) Reset() {
 	*x = ReadAllGreetsResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[5]
+		mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[5]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -357,7 +357,7 @@ func (x *ReadAllGreetsResponse) String() string {
 func (*ReadAllGreetsResponse) ProtoMessage() {}
 
 func (x *ReadAllGreetsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[5]
+	mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[5]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -370,7 +370,7 @@ func (x *ReadAllGreetsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadAllGreetsResponse.ProtoReflect.Descriptor instead.
 func (*ReadAllGreetsResponse) Descriptor() ([]byte, []int) {
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP(), []int{5}
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *ReadAllGreetsResponse) GetGreets() *Greets {
@@ -391,7 +391,7 @@ type ReadGreetRequest struct {
 func (x *ReadGreetRequest) Reset() {
 	*x = ReadGreetRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[6]
+		mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -404,7 +404,7 @@ func (x *ReadGreetRequest) String() string {
 func (*ReadGreetRequest) ProtoMessage() {}
 
 func (x *ReadGreetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[6]
+	mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -417,7 +417,7 @@ func (x *ReadGreetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadGreetRequest.ProtoReflect.Descriptor instead.
 func (*ReadGreetRequest) Descriptor() ([]byte, []int) {
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP(), []int{6}
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *ReadGreetRequest) GetGreetID() int64 {
@@ -438,7 +438,7 @@ type ReadGreetResponse struct {
 func (x *ReadGreetResponse) Reset() {
 	*x = ReadGreetResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[7]
+		mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[7]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -451,7 +451,7 @@ func (x *ReadGreetResponse) String() string {
 func (*ReadGreetResponse) ProtoMessage() {}
 
 func (x *ReadGreetResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[7]
+	mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[7]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -464,7 +464,7 @@ func (x *ReadGreetResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ReadGreetResponse.ProtoReflect.Descriptor instead.
 func (*ReadGreetResponse) Descriptor() ([]byte, []int) {
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP(), []int{7}
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *ReadGreetResponse) GetGreet() *Greet {
@@ -486,7 +486,7 @@ type UpdateGreetRequest struct {
 func (x *UpdateGreetRequest) Reset() {
 	*x = UpdateGreetRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[8]
+		mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[8]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -499,7 +499,7 @@ func (x *UpdateGreetRequest) String() string {
 func (*UpdateGreetRequest) ProtoMessage() {}
 
 func (x *UpdateGreetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[8]
+	mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[8]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -512,7 +512,7 @@ func (x *UpdateGreetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateGreetRequest.ProtoReflect.Descriptor instead.
 func (*UpdateGreetRequest) Descriptor() ([]byte, []int) {
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP(), []int{8}
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *UpdateGreetRequest) GetGreetID() int64 {
@@ -540,7 +540,7 @@ type UpdateGreetResponse struct {
 func (x *UpdateGreetResponse) Reset() {
 	*x = UpdateGreetResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[9]
+		mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[9]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -553,7 +553,7 @@ func (x *UpdateGreetResponse) String() string {
 func (*UpdateGreetResponse) ProtoMessage() {}
 
 func (x *UpdateGreetResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[9]
+	mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[9]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -566,7 +566,7 @@ func (x *UpdateGreetResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateGreetResponse.ProtoReflect.Descriptor instead.
 func (*UpdateGreetResponse) Descriptor() ([]byte, []int) {
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP(), []int{9}
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *UpdateGreetResponse) GetGreetID() int64 {
@@ -587,7 +587,7 @@ type DeleteGreetRequest struct {
 func (x *DeleteGreetRequest) Reset() {
 	*x = DeleteGreetRequest{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[10]
+		mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[10]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -600,7 +600,7 @@ func (x *DeleteGreetRequest) String() string {
 func (*DeleteGreetRequest) ProtoMessage() {}
 
 func (x *DeleteGreetRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[10]
+	mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[10]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -613,7 +613,7 @@ func (x *DeleteGreetRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteGreetRequest.ProtoReflect.Descriptor instead.
 func (*DeleteGreetRequest) Descriptor() ([]byte, []int) {
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP(), []int{10}
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *DeleteGreetRequest) GetGreetID() int64 {
@@ -634,7 +634,7 @@ type DeleteGreetResponse struct {
 func (x *DeleteGreetResponse) Reset() {
 	*x = DeleteGreetResponse{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[11]
+		mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[11]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -647,7 +647,7 @@ func (x *DeleteGreetResponse) String() string {
 func (*DeleteGreetResponse) ProtoMessage() {}
 
 func (x *DeleteGreetResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[11]
+	mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[11]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -660,7 +660,7 @@ func (x *DeleteGreetResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use DeleteGreetResponse.ProtoReflect.Descriptor instead.
 func (*DeleteGreetResponse) Descriptor() ([]byte, []int) {
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP(), []int{11}
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP(), []int{11}
 }
 
 func (x *DeleteGreetResponse) GetGreetID() int64 {
@@ -676,13 +676,13 @@ type Greet_Message struct {
 	unknownFields protoimpl.UnknownFields
 
 	Msg      string                 `protobuf:"bytes,1,opt,name=msg,proto3" json:"msg,omitempty"`
-	Language Greet_Message_Language `protobuf:"varint,2,opt,name=language,proto3,enum=contextlogic.hello_service.v1.Greet_Message_Language" json:"language,omitempty"`
+	Language Greet_Message_Language `protobuf:"varint,2,opt,name=language,proto3,enum=contextlogic.autobots.v1.Greet_Message_Language" json:"language,omitempty"`
 }
 
 func (x *Greet_Message) Reset() {
 	*x = Greet_Message{}
 	if protoimpl.UnsafeEnabled {
-		mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[12]
+		mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[12]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		ms.StoreMessageInfo(mi)
 	}
@@ -695,7 +695,7 @@ func (x *Greet_Message) String() string {
 func (*Greet_Message) ProtoMessage() {}
 
 func (x *Greet_Message) ProtoReflect() protoreflect.Message {
-	mi := &file_contextlogic_hello_service_v1_greeter_proto_msgTypes[12]
+	mi := &file_contextlogic_autobots_v1_greeter_proto_msgTypes[12]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -708,7 +708,7 @@ func (x *Greet_Message) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use Greet_Message.ProtoReflect.Descriptor instead.
 func (*Greet_Message) Descriptor() ([]byte, []int) {
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP(), []int{0, 0}
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP(), []int{0, 0}
 }
 
 func (x *Greet_Message) GetMsg() string {
@@ -725,9 +725,9 @@ func (x *Greet_Message) GetLanguage() Greet_Message_Language {
 	return Greet_Message_UNKNOW_LANGUAGE_TYPE
 }
 
-var File_contextlogic_hello_service_v1_greeter_proto protoreflect.FileDescriptor
+var File_contextlogic_autobots_v1_greeter_proto protoreflect.FileDescriptor
 
-var file_contextlogic_hello_service_v1_greeter_proto_rawDesc = []byte{
+var file_contextlogic_autobots_v1_greeter_proto_rawDesc = []byte{
 	0x0a, 0x2b, 0x63, 0x6f, 0x6e, 0x74, 0x65, 0x78, 0x74, 0x6c, 0x6f, 0x67, 0x69, 0x63, 0x2f, 0x68,
 	0x65, 0x6c, 0x6c, 0x6f, 0x5f, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x2f, 0x76, 0x31, 0x2f,
 	0x67, 0x72, 0x65, 0x65, 0x74, 0x65, 0x72, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x12, 0x1d, 0x63,
@@ -858,56 +858,56 @@ var file_contextlogic_hello_service_v1_greeter_proto_rawDesc = []byte{
 }
 
 var (
-	file_contextlogic_hello_service_v1_greeter_proto_rawDescOnce sync.Once
-	file_contextlogic_hello_service_v1_greeter_proto_rawDescData = file_contextlogic_hello_service_v1_greeter_proto_rawDesc
+	file_contextlogic_autobots_v1_greeter_proto_rawDescOnce sync.Once
+	file_contextlogic_autobots_v1_greeter_proto_rawDescData = file_contextlogic_autobots_v1_greeter_proto_rawDesc
 )
 
-func file_contextlogic_hello_service_v1_greeter_proto_rawDescGZIP() []byte {
-	file_contextlogic_hello_service_v1_greeter_proto_rawDescOnce.Do(func() {
-		file_contextlogic_hello_service_v1_greeter_proto_rawDescData = protoimpl.X.CompressGZIP(file_contextlogic_hello_service_v1_greeter_proto_rawDescData)
+func file_contextlogic_autobots_v1_greeter_proto_rawDescGZIP() []byte {
+	file_contextlogic_autobots_v1_greeter_proto_rawDescOnce.Do(func() {
+		file_contextlogic_autobots_v1_greeter_proto_rawDescData = protoimpl.X.CompressGZIP(file_contextlogic_autobots_v1_greeter_proto_rawDescData)
 	})
-	return file_contextlogic_hello_service_v1_greeter_proto_rawDescData
+	return file_contextlogic_autobots_v1_greeter_proto_rawDescData
 }
 
-var file_contextlogic_hello_service_v1_greeter_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
-var file_contextlogic_hello_service_v1_greeter_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
-var file_contextlogic_hello_service_v1_greeter_proto_goTypes = []interface{}{
-	(Greet_Message_Language)(0),   // 0: contextlogic.hello_service.v1.Greet.Message.Language
-	(*Greet)(nil),                 // 1: contextlogic.hello_service.v1.Greet
-	(*Greets)(nil),                // 2: contextlogic.hello_service.v1.Greets
-	(*CreateGreetRequest)(nil),    // 3: contextlogic.hello_service.v1.CreateGreetRequest
-	(*CreateGreetResponse)(nil),   // 4: contextlogic.hello_service.v1.CreateGreetResponse
-	(*ReadAllGreetsRequest)(nil),  // 5: contextlogic.hello_service.v1.ReadAllGreetsRequest
-	(*ReadAllGreetsResponse)(nil), // 6: contextlogic.hello_service.v1.ReadAllGreetsResponse
-	(*ReadGreetRequest)(nil),      // 7: contextlogic.hello_service.v1.ReadGreetRequest
-	(*ReadGreetResponse)(nil),     // 8: contextlogic.hello_service.v1.ReadGreetResponse
-	(*UpdateGreetRequest)(nil),    // 9: contextlogic.hello_service.v1.UpdateGreetRequest
-	(*UpdateGreetResponse)(nil),   // 10: contextlogic.hello_service.v1.UpdateGreetResponse
-	(*DeleteGreetRequest)(nil),    // 11: contextlogic.hello_service.v1.DeleteGreetRequest
-	(*DeleteGreetResponse)(nil),   // 12: contextlogic.hello_service.v1.DeleteGreetResponse
-	(*Greet_Message)(nil),         // 13: contextlogic.hello_service.v1.Greet.Message
+var file_contextlogic_autobots_v1_greeter_proto_enumTypes = make([]protoimpl.EnumInfo, 1)
+var file_contextlogic_autobots_v1_greeter_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_contextlogic_autobots_v1_greeter_proto_goTypes = []interface{}{
+	(Greet_Message_Language)(0),   // 0: contextlogic.autobots.v1.Greet.Message.Language
+	(*Greet)(nil),                 // 1: contextlogic.autobots.v1.Greet
+	(*Greets)(nil),                // 2: contextlogic.autobots.v1.Greets
+	(*CreateGreetRequest)(nil),    // 3: contextlogic.autobots.v1.CreateGreetRequest
+	(*CreateGreetResponse)(nil),   // 4: contextlogic.autobots.v1.CreateGreetResponse
+	(*ReadAllGreetsRequest)(nil),  // 5: contextlogic.autobots.v1.ReadAllGreetsRequest
+	(*ReadAllGreetsResponse)(nil), // 6: contextlogic.autobots.v1.ReadAllGreetsResponse
+	(*ReadGreetRequest)(nil),      // 7: contextlogic.autobots.v1.ReadGreetRequest
+	(*ReadGreetResponse)(nil),     // 8: contextlogic.autobots.v1.ReadGreetResponse
+	(*UpdateGreetRequest)(nil),    // 9: contextlogic.autobots.v1.UpdateGreetRequest
+	(*UpdateGreetResponse)(nil),   // 10: contextlogic.autobots.v1.UpdateGreetResponse
+	(*DeleteGreetRequest)(nil),    // 11: contextlogic.autobots.v1.DeleteGreetRequest
+	(*DeleteGreetResponse)(nil),   // 12: contextlogic.autobots.v1.DeleteGreetResponse
+	(*Greet_Message)(nil),         // 13: contextlogic.autobots.v1.Greet.Message
 	(*timestamp.Timestamp)(nil),   // 14: google.protobuf.Timestamp
 }
-var file_contextlogic_hello_service_v1_greeter_proto_depIdxs = []int32{
-	13, // 0: contextlogic.hello_service.v1.Greet.greetMessage:type_name -> contextlogic.hello_service.v1.Greet.Message
-	14, // 1: contextlogic.hello_service.v1.Greet.created_at:type_name -> google.protobuf.Timestamp
-	14, // 2: contextlogic.hello_service.v1.Greet.updated_at:type_name -> google.protobuf.Timestamp
-	1,  // 3: contextlogic.hello_service.v1.Greets.greets:type_name -> contextlogic.hello_service.v1.Greet
-	1,  // 4: contextlogic.hello_service.v1.CreateGreetRequest.greet:type_name -> contextlogic.hello_service.v1.Greet
-	2,  // 5: contextlogic.hello_service.v1.ReadAllGreetsResponse.greets:type_name -> contextlogic.hello_service.v1.Greets
-	1,  // 6: contextlogic.hello_service.v1.ReadGreetResponse.greet:type_name -> contextlogic.hello_service.v1.Greet
-	1,  // 7: contextlogic.hello_service.v1.UpdateGreetRequest.greet:type_name -> contextlogic.hello_service.v1.Greet
-	0,  // 8: contextlogic.hello_service.v1.Greet.Message.language:type_name -> contextlogic.hello_service.v1.Greet.Message.Language
-	3,  // 9: contextlogic.hello_service.v1.Greeter.CreateGreet:input_type -> contextlogic.hello_service.v1.CreateGreetRequest
-	5,  // 10: contextlogic.hello_service.v1.Greeter.ReadAllGreets:input_type -> contextlogic.hello_service.v1.ReadAllGreetsRequest
-	7,  // 11: contextlogic.hello_service.v1.Greeter.ReadGreet:input_type -> contextlogic.hello_service.v1.ReadGreetRequest
-	9,  // 12: contextlogic.hello_service.v1.Greeter.UpdateGreet:input_type -> contextlogic.hello_service.v1.UpdateGreetRequest
-	11, // 13: contextlogic.hello_service.v1.Greeter.DeleteGreet:input_type -> contextlogic.hello_service.v1.DeleteGreetRequest
-	4,  // 14: contextlogic.hello_service.v1.Greeter.CreateGreet:output_type -> contextlogic.hello_service.v1.CreateGreetResponse
-	6,  // 15: contextlogic.hello_service.v1.Greeter.ReadAllGreets:output_type -> contextlogic.hello_service.v1.ReadAllGreetsResponse
-	8,  // 16: contextlogic.hello_service.v1.Greeter.ReadGreet:output_type -> contextlogic.hello_service.v1.ReadGreetResponse
-	10, // 17: contextlogic.hello_service.v1.Greeter.UpdateGreet:output_type -> contextlogic.hello_service.v1.UpdateGreetResponse
-	12, // 18: contextlogic.hello_service.v1.Greeter.DeleteGreet:output_type -> contextlogic.hello_service.v1.DeleteGreetResponse
+var file_contextlogic_autobots_v1_greeter_proto_depIdxs = []int32{
+	13, // 0: contextlogic.autobots.v1.Greet.greetMessage:type_name -> contextlogic.autobots.v1.Greet.Message
+	14, // 1: contextlogic.autobots.v1.Greet.created_at:type_name -> google.protobuf.Timestamp
+	14, // 2: contextlogic.autobots.v1.Greet.updated_at:type_name -> google.protobuf.Timestamp
+	1,  // 3: contextlogic.autobots.v1.Greets.greets:type_name -> contextlogic.autobots.v1.Greet
+	1,  // 4: contextlogic.autobots.v1.CreateGreetRequest.greet:type_name -> contextlogic.autobots.v1.Greet
+	2,  // 5: contextlogic.autobots.v1.ReadAllGreetsResponse.greets:type_name -> contextlogic.autobots.v1.Greets
+	1,  // 6: contextlogic.autobots.v1.ReadGreetResponse.greet:type_name -> contextlogic.autobots.v1.Greet
+	1,  // 7: contextlogic.autobots.v1.UpdateGreetRequest.greet:type_name -> contextlogic.autobots.v1.Greet
+	0,  // 8: contextlogic.autobots.v1.Greet.Message.language:type_name -> contextlogic.autobots.v1.Greet.Message.Language
+	3,  // 9: contextlogic.autobots.v1.Greeter.CreateGreet:input_type -> contextlogic.autobots.v1.CreateGreetRequest
+	5,  // 10: contextlogic.autobots.v1.Greeter.ReadAllGreets:input_type -> contextlogic.autobots.v1.ReadAllGreetsRequest
+	7,  // 11: contextlogic.autobots.v1.Greeter.ReadGreet:input_type -> contextlogic.autobots.v1.ReadGreetRequest
+	9,  // 12: contextlogic.autobots.v1.Greeter.UpdateGreet:input_type -> contextlogic.autobots.v1.UpdateGreetRequest
+	11, // 13: contextlogic.autobots.v1.Greeter.DeleteGreet:input_type -> contextlogic.autobots.v1.DeleteGreetRequest
+	4,  // 14: contextlogic.autobots.v1.Greeter.CreateGreet:output_type -> contextlogic.autobots.v1.CreateGreetResponse
+	6,  // 15: contextlogic.autobots.v1.Greeter.ReadAllGreets:output_type -> contextlogic.autobots.v1.ReadAllGreetsResponse
+	8,  // 16: contextlogic.autobots.v1.Greeter.ReadGreet:output_type -> contextlogic.autobots.v1.ReadGreetResponse
+	10, // 17: contextlogic.autobots.v1.Greeter.UpdateGreet:output_type -> contextlogic.autobots.v1.UpdateGreetResponse
+	12, // 18: contextlogic.autobots.v1.Greeter.DeleteGreet:output_type -> contextlogic.autobots.v1.DeleteGreetResponse
 	14, // [14:19] is the sub-list for method output_type
 	9,  // [9:14] is the sub-list for method input_type
 	9,  // [9:9] is the sub-list for extension type_name
@@ -915,13 +915,13 @@ var file_contextlogic_hello_service_v1_greeter_proto_depIdxs = []int32{
 	0,  // [0:9] is the sub-list for field type_name
 }
 
-func init() { file_contextlogic_hello_service_v1_greeter_proto_init() }
-func file_contextlogic_hello_service_v1_greeter_proto_init() {
-	if File_contextlogic_hello_service_v1_greeter_proto != nil {
+func init() { file_contextlogic_autobots_v1_greeter_proto_init() }
+func file_contextlogic_autobots_v1_greeter_proto_init() {
+	if File_contextlogic_autobots_v1_greeter_proto != nil {
 		return
 	}
 	if !protoimpl.UnsafeEnabled {
-		file_contextlogic_hello_service_v1_greeter_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
+		file_contextlogic_autobots_v1_greeter_proto_msgTypes[0].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Greet); i {
 			case 0:
 				return &v.state
@@ -933,7 +933,7 @@ func file_contextlogic_hello_service_v1_greeter_proto_init() {
 				return nil
 			}
 		}
-		file_contextlogic_hello_service_v1_greeter_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
+		file_contextlogic_autobots_v1_greeter_proto_msgTypes[1].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Greets); i {
 			case 0:
 				return &v.state
@@ -945,7 +945,7 @@ func file_contextlogic_hello_service_v1_greeter_proto_init() {
 				return nil
 			}
 		}
-		file_contextlogic_hello_service_v1_greeter_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
+		file_contextlogic_autobots_v1_greeter_proto_msgTypes[2].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CreateGreetRequest); i {
 			case 0:
 				return &v.state
@@ -957,7 +957,7 @@ func file_contextlogic_hello_service_v1_greeter_proto_init() {
 				return nil
 			}
 		}
-		file_contextlogic_hello_service_v1_greeter_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
+		file_contextlogic_autobots_v1_greeter_proto_msgTypes[3].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*CreateGreetResponse); i {
 			case 0:
 				return &v.state
@@ -969,7 +969,7 @@ func file_contextlogic_hello_service_v1_greeter_proto_init() {
 				return nil
 			}
 		}
-		file_contextlogic_hello_service_v1_greeter_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
+		file_contextlogic_autobots_v1_greeter_proto_msgTypes[4].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ReadAllGreetsRequest); i {
 			case 0:
 				return &v.state
@@ -981,7 +981,7 @@ func file_contextlogic_hello_service_v1_greeter_proto_init() {
 				return nil
 			}
 		}
-		file_contextlogic_hello_service_v1_greeter_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
+		file_contextlogic_autobots_v1_greeter_proto_msgTypes[5].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ReadAllGreetsResponse); i {
 			case 0:
 				return &v.state
@@ -993,7 +993,7 @@ func file_contextlogic_hello_service_v1_greeter_proto_init() {
 				return nil
 			}
 		}
-		file_contextlogic_hello_service_v1_greeter_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
+		file_contextlogic_autobots_v1_greeter_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ReadGreetRequest); i {
 			case 0:
 				return &v.state
@@ -1005,7 +1005,7 @@ func file_contextlogic_hello_service_v1_greeter_proto_init() {
 				return nil
 			}
 		}
-		file_contextlogic_hello_service_v1_greeter_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
+		file_contextlogic_autobots_v1_greeter_proto_msgTypes[7].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*ReadGreetResponse); i {
 			case 0:
 				return &v.state
@@ -1017,7 +1017,7 @@ func file_contextlogic_hello_service_v1_greeter_proto_init() {
 				return nil
 			}
 		}
-		file_contextlogic_hello_service_v1_greeter_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
+		file_contextlogic_autobots_v1_greeter_proto_msgTypes[8].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UpdateGreetRequest); i {
 			case 0:
 				return &v.state
@@ -1029,7 +1029,7 @@ func file_contextlogic_hello_service_v1_greeter_proto_init() {
 				return nil
 			}
 		}
-		file_contextlogic_hello_service_v1_greeter_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
+		file_contextlogic_autobots_v1_greeter_proto_msgTypes[9].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*UpdateGreetResponse); i {
 			case 0:
 				return &v.state
@@ -1041,7 +1041,7 @@ func file_contextlogic_hello_service_v1_greeter_proto_init() {
 				return nil
 			}
 		}
-		file_contextlogic_hello_service_v1_greeter_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
+		file_contextlogic_autobots_v1_greeter_proto_msgTypes[10].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DeleteGreetRequest); i {
 			case 0:
 				return &v.state
@@ -1053,7 +1053,7 @@ func file_contextlogic_hello_service_v1_greeter_proto_init() {
 				return nil
 			}
 		}
-		file_contextlogic_hello_service_v1_greeter_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
+		file_contextlogic_autobots_v1_greeter_proto_msgTypes[11].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*DeleteGreetResponse); i {
 			case 0:
 				return &v.state
@@ -1065,7 +1065,7 @@ func file_contextlogic_hello_service_v1_greeter_proto_init() {
 				return nil
 			}
 		}
-		file_contextlogic_hello_service_v1_greeter_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
+		file_contextlogic_autobots_v1_greeter_proto_msgTypes[12].Exporter = func(v interface{}, i int) interface{} {
 			switch v := v.(*Greet_Message); i {
 			case 0:
 				return &v.state
@@ -1082,21 +1082,21 @@ func file_contextlogic_hello_service_v1_greeter_proto_init() {
 	out := protoimpl.TypeBuilder{
 		File: protoimpl.DescBuilder{
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
-			RawDescriptor: file_contextlogic_hello_service_v1_greeter_proto_rawDesc,
+			RawDescriptor: file_contextlogic_autobots_v1_greeter_proto_rawDesc,
 			NumEnums:      1,
 			NumMessages:   13,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
-		GoTypes:           file_contextlogic_hello_service_v1_greeter_proto_goTypes,
-		DependencyIndexes: file_contextlogic_hello_service_v1_greeter_proto_depIdxs,
-		EnumInfos:         file_contextlogic_hello_service_v1_greeter_proto_enumTypes,
-		MessageInfos:      file_contextlogic_hello_service_v1_greeter_proto_msgTypes,
+		GoTypes:           file_contextlogic_autobots_v1_greeter_proto_goTypes,
+		DependencyIndexes: file_contextlogic_autobots_v1_greeter_proto_depIdxs,
+		EnumInfos:         file_contextlogic_autobots_v1_greeter_proto_enumTypes,
+		MessageInfos:      file_contextlogic_autobots_v1_greeter_proto_msgTypes,
 	}.Build()
-	File_contextlogic_hello_service_v1_greeter_proto = out.File
-	file_contextlogic_hello_service_v1_greeter_proto_rawDesc = nil
-	file_contextlogic_hello_service_v1_greeter_proto_goTypes = nil
-	file_contextlogic_hello_service_v1_greeter_proto_depIdxs = nil
+	File_contextlogic_autobots_v1_greeter_proto = out.File
+	file_contextlogic_autobots_v1_greeter_proto_rawDesc = nil
+	file_contextlogic_autobots_v1_greeter_proto_goTypes = nil
+	file_contextlogic_autobots_v1_greeter_proto_depIdxs = nil
 }
 
 // Reference imports to suppress errors if they are not otherwise used.
@@ -1128,7 +1128,7 @@ func NewGreeterClient(cc grpc.ClientConnInterface) GreeterClient {
 
 func (c *greeterClient) CreateGreet(ctx context.Context, in *CreateGreetRequest, opts ...grpc.CallOption) (*CreateGreetResponse, error) {
 	out := new(CreateGreetResponse)
-	err := c.cc.Invoke(ctx, "/contextlogic.hello_service.v1.Greeter/CreateGreet", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/contextlogic.autobots.v1.Greeter/CreateGreet", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1137,7 +1137,7 @@ func (c *greeterClient) CreateGreet(ctx context.Context, in *CreateGreetRequest,
 
 func (c *greeterClient) ReadAllGreets(ctx context.Context, in *ReadAllGreetsRequest, opts ...grpc.CallOption) (*ReadAllGreetsResponse, error) {
 	out := new(ReadAllGreetsResponse)
-	err := c.cc.Invoke(ctx, "/contextlogic.hello_service.v1.Greeter/ReadAllGreets", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/contextlogic.autobots.v1.Greeter/ReadAllGreets", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1146,7 +1146,7 @@ func (c *greeterClient) ReadAllGreets(ctx context.Context, in *ReadAllGreetsRequ
 
 func (c *greeterClient) ReadGreet(ctx context.Context, in *ReadGreetRequest, opts ...grpc.CallOption) (*ReadGreetResponse, error) {
 	out := new(ReadGreetResponse)
-	err := c.cc.Invoke(ctx, "/contextlogic.hello_service.v1.Greeter/ReadGreet", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/contextlogic.autobots.v1.Greeter/ReadGreet", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1155,7 +1155,7 @@ func (c *greeterClient) ReadGreet(ctx context.Context, in *ReadGreetRequest, opt
 
 func (c *greeterClient) UpdateGreet(ctx context.Context, in *UpdateGreetRequest, opts ...grpc.CallOption) (*UpdateGreetResponse, error) {
 	out := new(UpdateGreetResponse)
-	err := c.cc.Invoke(ctx, "/contextlogic.hello_service.v1.Greeter/UpdateGreet", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/contextlogic.autobots.v1.Greeter/UpdateGreet", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1164,7 +1164,7 @@ func (c *greeterClient) UpdateGreet(ctx context.Context, in *UpdateGreetRequest,
 
 func (c *greeterClient) DeleteGreet(ctx context.Context, in *DeleteGreetRequest, opts ...grpc.CallOption) (*DeleteGreetResponse, error) {
 	out := new(DeleteGreetResponse)
-	err := c.cc.Invoke(ctx, "/contextlogic.hello_service.v1.Greeter/DeleteGreet", in, out, opts...)
+	err := c.cc.Invoke(ctx, "/contextlogic.autobots.v1.Greeter/DeleteGreet", in, out, opts...)
 	if err != nil {
 		return nil, err
 	}
@@ -1214,7 +1214,7 @@ func _Greeter_CreateGreet_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/contextlogic.hello_service.v1.Greeter/CreateGreet",
+		FullMethod: "/contextlogic.autobots.v1.Greeter/CreateGreet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GreeterServer).CreateGreet(ctx, req.(*CreateGreetRequest))
@@ -1232,7 +1232,7 @@ func _Greeter_ReadAllGreets_Handler(srv interface{}, ctx context.Context, dec fu
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/contextlogic.hello_service.v1.Greeter/ReadAllGreets",
+		FullMethod: "/contextlogic.autobots.v1.Greeter/ReadAllGreets",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GreeterServer).ReadAllGreets(ctx, req.(*ReadAllGreetsRequest))
@@ -1250,7 +1250,7 @@ func _Greeter_ReadGreet_Handler(srv interface{}, ctx context.Context, dec func(i
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/contextlogic.hello_service.v1.Greeter/ReadGreet",
+		FullMethod: "/contextlogic.autobots.v1.Greeter/ReadGreet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GreeterServer).ReadGreet(ctx, req.(*ReadGreetRequest))
@@ -1268,7 +1268,7 @@ func _Greeter_UpdateGreet_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/contextlogic.hello_service.v1.Greeter/UpdateGreet",
+		FullMethod: "/contextlogic.autobots.v1.Greeter/UpdateGreet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GreeterServer).UpdateGreet(ctx, req.(*UpdateGreetRequest))
@@ -1286,7 +1286,7 @@ func _Greeter_DeleteGreet_Handler(srv interface{}, ctx context.Context, dec func
 	}
 	info := &grpc.UnaryServerInfo{
 		Server:     srv,
-		FullMethod: "/contextlogic.hello_service.v1.Greeter/DeleteGreet",
+		FullMethod: "/contextlogic.autobots.v1.Greeter/DeleteGreet",
 	}
 	handler := func(ctx context.Context, req interface{}) (interface{}, error) {
 		return srv.(GreeterServer).DeleteGreet(ctx, req.(*DeleteGreetRequest))
@@ -1295,7 +1295,7 @@ func _Greeter_DeleteGreet_Handler(srv interface{}, ctx context.Context, dec func
 }
 
 var _Greeter_serviceDesc = grpc.ServiceDesc{
-	ServiceName: "contextlogic.hello_service.v1.Greeter",
+	ServiceName: "contextlogic.autobots.v1.Greeter",
 	HandlerType: (*GreeterServer)(nil),
 	Methods: []grpc.MethodDesc{
 		{
@@ -1320,5 +1320,5 @@ var _Greeter_serviceDesc = grpc.ServiceDesc{
 		},
 	},
 	Streams:  []grpc.StreamDesc{},
-	Metadata: "contextlogic/hello_service/v1/greeter.proto",
+	Metadata: "contextlogic/autobots/v1/greeter.proto",
 }

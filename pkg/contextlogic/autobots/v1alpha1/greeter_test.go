@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/ContextLogic/hello-service/api/proto_gen/contextlogic/hello_service/v1alpha1"
+	"github.com/ContextLogic/autobots/api/proto_gen/contextlogic/autobots/v1alpha1"
 	"github.com/stretchr/testify/assert"
 )
 

@@ -1,10 +1,10 @@
 syntax = "proto3";
-package contextlogic.hello_service.v1alpha1;
+package contextlogic.autobots.v1alpha1;
 
 import "google/protobuf/timestamp.proto";
 import "google/api/annotations.proto";
 
-option go_package = "contextlogic/hello_service/v1alpha1";
+option go_package = "contextlogic/autobots/v1alpha1";
 
 message Greet {
     int64 id = 1;

@@ -1,6 +1,6 @@
 {
   "base_config": {
-    "service_name": "hello-service",
+    "service_name": "autobots",
     "http_port": 8080,
     "server_config": {
       "grpc_port": 8081
@@ -11,7 +11,7 @@
       "proxy_address": "localhost:10000",
       "use_proxy": false,
       "service_addresses": {
-        "hello-service-dev": "localhost:8081"
+        "autobots-dev": "localhost:8081"
       }
     }
   },

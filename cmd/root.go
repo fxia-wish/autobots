@@ -16,7 +16,7 @@ var (
 	//Git is the git
 	Git     = "unset"
 	rootCmd = &cobra.Command{
-		Use:   "hello-service",
+		Use:   "autobots",
 		Short: "This is a template service",
 		Long:  `This is a go template service based on go-base-service"`,
 	}

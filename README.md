@@ -34,11 +34,11 @@ You'll need to install and set up your Go environment before continuing. Please 
 
 This hello service uses go mod as dependency management, this feature is only compatible with Go version >= 1.11. Please install Go version >= 1.11
 
-Once that's setup, you should be able to create your own repo using hello-service as a template repo.
+Once that's setup, you should be able to create your own repo using autobots as a template repo.
 
 #### 1. Create a Project off the Template（skip this if your repo is created by one-click)
 
-You can setup a new service on the template page [here](https://github.com/ContextLogic/hello-service/generate).
+You can setup a new service on the template page [here](https://github.com/ContextLogic/autobots/generate).
 
 > Note: The name of the Repository should be the name of the Service.
 
@@ -64,26 +64,26 @@ Switch to the directory of your new project, then run the following commands.
 If you're on Linux do:
 
 ```bash
-find . -type f -name "*" -not -path "./.git/*" -not -path "./.gitlab-ci.yml" -not -path "./Dockerfile" -print0 | LC_CTYPE=C xargs -0 sed -i '' -e 's/hello-service/[your-repo-name]/g'
+find . -type f -name "*" -not -path "./.git/*" -not -path "./.gitlab-ci.yml" -not -path "./Dockerfile" -print0 | LC_CTYPE=C xargs -0 sed -i '' -e 's/autobots/[your-repo-name]/g'
 
-find . -type f -name "*" -not -path "./.git/*" -not -path "./.gitlab-ci.yml" -not -path "./Dockerfile" -print0 | LC_CTYPE=C xargs -0 sed -i '' -e 's/hello_service/[your_repo_name_with_underscore]/g'
+find . -type f -name "*" -not -path "./.git/*" -not -path "./.gitlab-ci.yml" -not -path "./Dockerfile" -print0 | LC_CTYPE=C xargs -0 sed -i '' -e 's/autobots/[your_repo_name_with_underscore]/g'
 
-for FILE in $(find . -name 'hello_service'); do mv $FILE $(echo $FILE | sed 's/hello_service/[your_repo_name_with_underscore]/g'); done
+for FILE in $(find . -name 'autobots'); do mv $FILE $(echo $FILE | sed 's/autobots/[your_repo_name_with_underscore]/g'); done
 ```
 
 If you're on Mac do:
 
 ```bash
-find . -type f -name "*" -not -path "./.git/*" -not -path "./.gitlab-ci.yml" -not -path "./Dockerfile" -print0 | LC_ALL=C xargs -0 sed -i '' -e 's/hello-service/[your-repo-name]/g'
+find . -type f -name "*" -not -path "./.git/*" -not -path "./.gitlab-ci.yml" -not -path "./Dockerfile" -print0 | LC_ALL=C xargs -0 sed -i '' -e 's/autobots/[your-repo-name]/g'
 
-find . -type f -name "*" -not -path "./.git/*" -not -path "./.gitlab-ci.yml" -not -path "./Dockerfile" -print0 | LC_ALL=C xargs -0 sed -i '' -e 's/hello_service/[your_repo_name_with_underscore]/g'
+find . -type f -name "*" -not -path "./.git/*" -not -path "./.gitlab-ci.yml" -not -path "./Dockerfile" -print0 | LC_ALL=C xargs -0 sed -i '' -e 's/autobots/[your_repo_name_with_underscore]/g'
 
-for FILE in $(find . -name 'hello_service'); do mv $FILE $(echo $FILE | sed 's/hello_service/[your_repo_name_with_underscore]/g'); done
+for FILE in $(find . -name 'autobots'); do mv $FILE $(echo $FILE | sed 's/autobots/[your_repo_name_with_underscore]/g'); done
 ```
 
-- Command 1: Replaces all instances of `hello-service` with your `repo` name or `service` name.
-- Command 2: Replaces all instances of `hello_service` with your `repo_with_underscore` name or `service_with_underscore` name.
-- Command 3: Renames all dirs named `hello_service` to your `repo_with_underscore` or `service_with_underscore` names.
+- Command 1: Replaces all instances of `autobots` with your `repo` name or `service` name.
+- Command 2: Replaces all instances of `autobots` with your `repo_with_underscore` name or `service_with_underscore` name.
+- Command 3: Renames all dirs named `autobots` to your `repo_with_underscore` or `service_with_underscore` names.
 
 > Note: Make sure you put in your repo name before running it!
 
@@ -171,11 +171,11 @@ docker-compose down # or ctrl+c
 
 ###### ii. Local Run
 
-Run `make all` (`sudo make all` on linux) and it will compile the protobuf definition files, build a copy of the binary under `bin/hello-service`.
+Run `make all` (`sudo make all` on linux) and it will compile the protobuf definition files, build a copy of the binary under `bin/autobots`.
 
 To run the server, execute the following command:
 
-`bin/hello-service -c=config/service.json` or use the `make run` command.
+`bin/autobots -c=config/service.json` or use the `make run` command.
 
 ##### III. Testing your local service
 
@@ -378,7 +378,7 @@ You can push your images to `ECR` using `Gitlab`. Anytime code is pushed to the 
 You can verify your image was built in [Amazon ECR](https://us-west-1.console.aws.amazon.com/ecr/repositories?region=us-west-1#). To get access to ECR, you will need to assume the [Registry Role](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_use_switch-role-console.html) on AWS. To do so, contact IT or the #security channel to give you permissions to do so. Once you've assumed the Registry Role, clicking on the Amazon ECR link above, should take you to the ECR repositories page. The name of the ECR repo will follow the format
 `contextlogic/<repository-name>`.
 
-> Note: Built images will be under the `contextlogic/` folder in ECR. E.g. `contextlogic/hello-service`.
+> Note: Built images will be under the `contextlogic/` folder in ECR. E.g. `contextlogic/autobots`.
 
 ##### II. Integrating your Microservice with Kubernetes (k8s) (Ignore this if your service is created by one-click)
 
@@ -411,7 +411,7 @@ channel to have someone add your security group to `us-east` manually.
 
 Please follow [this](<https://wiki.wish.site/display/Infra/Creating+a+new+service+to+k8s>) guide to deploy it to k8s.
 
-> Note: Built images will be under the `contextlogic/` folder in ECR. E.g. `contextlogic/hello-service`.
+> Note: Built images will be under the `contextlogic/` folder in ECR. E.g. `contextlogic/autobots`.
 
 > Note: Some of the docs are outdated, so if you have questions please ask the [#k8s-all-the-things](https://logicians.slack.com/archives/CFEJWJ9T9)
 
@@ -435,11 +435,11 @@ To setup up your app, go to the link below.
 
 To setup your canary, you will use the same [kube-deploy](https://github.com/ContextLogic/kube-deploy/wiki/kube-deploy-config) instructions.
 
-This time in step 1, the name of your app will be (app-name)-canary e.g. `hello-service-canary`.
+This time in step 1, the name of your app will be (app-name)-canary e.g. `autobots-canary`.
 
 In steps 2 and 3, used the name `canary`, and associate it with all production cluster.
 
-An example of a canary project - <https://kube-deploy.i.wish.com/project/hello-service-canary>
+An example of a canary project - <https://kube-deploy.i.wish.com/project/autobots-canary>
 
 Congratulations :tada: :confetti_ball:, your service is now setup for deployments from your Gitlab pipelines.
 
@@ -447,7 +447,7 @@ Congratulations :tada: :confetti_ball:, your service is now setup for deployment
 
 To test the newly running service, you can issue a curl against it via `Consul` to test the http server:
 
-> Action: Replace service-name with the name of your service. E.g. `curl http://hello-service-dev.service.consul:8080/status`
+> Action: Replace service-name with the name of your service. E.g. `curl http://autobots-dev.service.consul:8080/status`
 
 `curl http://<service-name>-dev.service.consul:8080/status`
 
@@ -462,7 +462,7 @@ Also please note that you do not need it in production. This is best for develop
 }
 ```
 
-e.g. `grpcurl -plaintext localhost:8081 contextlogic.hello_service.v1.Greeter.ReadAllGreets`
+e.g. `grpcurl -plaintext localhost:8081 contextlogic.autobots.v1.Greeter.ReadAllGreets`
 
 #### 7. Interfacing with clroot/sweeper
 

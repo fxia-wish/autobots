@@ -6,16 +6,16 @@ import (
 
 	"github.com/ContextLogic/go-base-service/pkg/client"
 	"github.com/ContextLogic/go-base-service/pkg/service"
-	"github.com/ContextLogic/hello-service/config"
-	"github.com/ContextLogic/hello-service/api/proto_gen/contextlogic/hello_service/v1"
+	"github.com/ContextLogic/autobots/config"
+	"github.com/ContextLogic/autobots/api/proto_gen/contextlogic/autobots/v1"
 	"github.com/spf13/cobra"
 )
 
 var (
 	clientCmd = &cobra.Command{
 		Use:   "client",
-		Short: "start a hello-service client",
-		Long:  `start a hello-service client`,
+		Short: "start a autobots client",
+		Long:  `start a autobots client`,
 		Run: func(cmd *cobra.Command, args []string) {
 			execClientCmd(cmd)
 		},
@@ -43,7 +43,7 @@ func exampleClient(cfg *config.Config) {
 		panic(err)
 	}
 
-	cc, ctx, err := client.Dial("hello-service-dev", client.WithClientConfig(&cfg.BaseConfig.ClientConfig))
+	cc, ctx, err := client.Dial("autobots-dev", client.WithClientConfig(&cfg.BaseConfig.ClientConfig))
 	if err != nil {
 		panic(err)
 	}

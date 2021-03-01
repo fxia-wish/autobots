@@ -2,9 +2,9 @@ package service
 
 import (
 	base "github.com/ContextLogic/go-base-service/pkg/service"
-	v1 "github.com/ContextLogic/hello-service/api/proto_gen/contextlogic/hello_service/v1"
-	"github.com/ContextLogic/hello-service/config"
-	svc "github.com/ContextLogic/hello-service/pkg/contextlogic/hello_service/v1"
+	v1 "github.com/ContextLogic/autobots/api/proto_gen/contextlogic/autobots/v1"
+	"github.com/ContextLogic/autobots/config"
+	svc "github.com/ContextLogic/autobots/pkg/contextlogic/autobots/v1"
 	"google.golang.org/grpc/reflection"
 )
 

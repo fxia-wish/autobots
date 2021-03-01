@@ -1,6 +1,6 @@
 package main
 
-import "github.com/ContextLogic/hello-service/cmd"
+import "github.com/ContextLogic/autobots/cmd"
 
 func main() {
 	cmd.Execute()

@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/assert"
-	"github.com/ContextLogic/hello-service/api/proto_gen/contextlogic/hello_service/v1"
+	"github.com/ContextLogic/autobots/api/proto_gen/contextlogic/autobots/v1"
 )
 
 func testHelloService() (*Greeter, error) {

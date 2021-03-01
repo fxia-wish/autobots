@@ -52,7 +52,7 @@ Note: The team is unlikely to be able to accept every single feature request tha
 
 So you wanna contribute some code! That's great! This project uses GitHub Pull Requests to manage contributions, so [read up on how to use [Github Pull Requests](https://help.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-requests) if you've never done it before.
 
-Please follow the [documentation](https://github.com/ContextLogic/hello-service#how-to-use) to finish the project setup
+Please follow the [documentation](https://github.com/ContextLogic/autobots#how-to-use) to finish the project setup
 
 ## Contribute Documentation
 
@@ -67,7 +67,7 @@ To contribute documentation:
 * Make sure your changes are formatted correctly and consistently with the rest of the documentation.
 * Re-read what you wrote, and run a spellchecker on it to make sure you didn't miss anything.
 * Write clear, concise commit message(s) using [conventional-changelog format](https://github.com/conventional-changelog/conventional-changelog-angular/blob/master/convention.md). Documentation commits should use `docs(<component>): <message>`.
-* Go to https://github.com/ContextLogic/hello-service/pulls and open a new pull request with your changes and request [automation-team](https://github.com/orgs/ContextLogic/teams/automation-team) as reviewer 
+* Go to https://github.com/ContextLogic/autobots/pulls and open a new pull request with your changes and request [automation-team](https://github.com/orgs/ContextLogic/teams/automation-team) as reviewer 
 
 ## Contribute Code
 
@@ -85,5 +85,5 @@ To contribute code:
 * Write tests that verify that your contribution works as expected.
 * Write clear, concise commit message(s) using [conventional-changelog format](https://github.com/conventional-changelog/conventional-changelog-angular/blob/master/convention.md).
 * Dependency updates, additions, or removals must be in individual commits
-* Go to https://github.com/ContextLogic/hello-service/pulls and open a new pull request with your changes and request [automation-team](https://github.com/orgs/ContextLogic/teams/automation-team) as reviewer 
+* Go to https://github.com/ContextLogic/autobots/pulls and open a new pull request with your changes and request [automation-team](https://github.com/orgs/ContextLogic/teams/automation-team) as reviewer 
 

@@ -1,4 +1,4 @@
-module github.com/ContextLogic/hello-service
+module github.com/ContextLogic/autobots
 
 go 1.13
 

@@ -3,7 +3,7 @@
 If you are looking for support, here are a few options:
 
 - [Slack](https://logicians.slack.com/archives/CRUAK4VSA)
-- [Documentation](https://github.com/ContextLogic/hello-service/blob/master/README.md)
+- [Documentation](https://github.com/ContextLogic/autobots/blob/master/README.md)
 
 You can also open a support ticket in [Jira](https://jira.wish.site/secure/CreateIssue!default.jspa) with project **Infra Tools & Automation (ITA)**. 
 

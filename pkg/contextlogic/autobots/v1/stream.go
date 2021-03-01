@@ -1,9 +1,9 @@
-package v1alpha1
+package v1
 
 import (
 	"io"
 
-	"github.com/ContextLogic/hello-service/api/proto_gen/contextlogic/hello_service/v1alpha1"
+	"github.com/ContextLogic/autobots/api/proto_gen/contextlogic/autobots/v1"
 )
 
 //Stream is Stream
@@ -11,9 +11,9 @@ type Stream struct {
 }
 
 //BiDirectStream is the code implementation of the function defined in the proto files
-func (s *Stream) BiDirectStream(stream v1alpha1.Stream_BiDirectStreamServer) (err error) {
+func (s *Stream) BiDirectStream(stream v1.Stream_BiDirectStreamServer) (err error) {
 
-	var streamDataList = []*v1alpha1.StreamData{}
+	var streamDataList = []*v1.StreamData{}
 	for {
 		in, err := stream.Recv()
 		if err == io.EOF {
@@ -25,8 +25,8 @@ func (s *Stream) BiDirectStream(stream v1alpha1.Stream_BiDirectStreamServer) (er
 		streamDataList = append(streamDataList, in.StreamData)
 	}
 	for _, sd := range streamDataList {
-		res := &v1alpha1.StreamDataResponse{
-			StreamData: &v1alpha1.StreamData{
+		res := &v1.StreamDataResponse{
+			StreamData: &v1.StreamData{
 				Id:    sd.Id,
 				Value: float64(sd.Id),
 			},
@@ -35,11 +35,11 @@ func (s *Stream) BiDirectStream(stream v1alpha1.Stream_BiDirectStreamServer) (er
 			return err
 		}
 	}
-	return stream.Send(&v1alpha1.StreamDataResponse{})
+	return stream.Send(&v1.StreamDataResponse{})
 }
 
 //ClientStream is the code implementation of the function defined in the proto files
-func (s *Stream) ClientStream(stream v1alpha1.Stream_ClientStreamServer) (err error) {
+func (s *Stream) ClientStream(stream v1.Stream_ClientStreamServer) (err error) {
 
 	var total float64
 
@@ -54,19 +54,19 @@ func (s *Stream) ClientStream(stream v1alpha1.Stream_ClientStreamServer) (err er
 		total += in.StreamData.Value
 	}
 
-	return stream.SendAndClose(&v1alpha1.StreamDataResponse{
-		StreamData: &v1alpha1.StreamData{
+	return stream.SendAndClose(&v1.StreamDataResponse{
+		StreamData: &v1.StreamData{
 			Value: total,
 		},
 	})
 }
 
 //ServerStream is the code implementation of the function defined in the proto files
-func (s *Stream) ServerStream(req *v1alpha1.StreamDataRequest, stream v1alpha1.Stream_ServerStreamServer) (err error) {
+func (s *Stream) ServerStream(req *v1.StreamDataRequest, stream v1.Stream_ServerStreamServer) (err error) {
 
 	for i := 0; i < 10; i++ {
-		res := &v1alpha1.StreamDataResponse{
-			StreamData: &v1alpha1.StreamData{
+		res := &v1.StreamDataResponse{
+			StreamData: &v1.StreamData{
 				Id:    req.StreamData.Id,
 				Value: float64(i),
 			},
@@ -75,5 +75,5 @@ func (s *Stream) ServerStream(req *v1alpha1.StreamDataRequest, stream v1alpha1.S
 			return err
 		}
 	}
-	return stream.Send(&v1alpha1.StreamDataResponse{})
+	return stream.Send(&v1.StreamDataResponse{})
 }

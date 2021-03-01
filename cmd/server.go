@@ -7,11 +7,11 @@ import (
 
 	log "github.com/ContextLogic/wish-logger/pkg"
 
-	"github.com/ContextLogic/hello-service/config"
+	"github.com/ContextLogic/autobots/config"
 
 	m "github.com/ContextLogic/wish-metric/pkg"
 
-	"github.com/ContextLogic/hello-service/pkg/service"
+	"github.com/ContextLogic/autobots/pkg/service"
 
 	"github.com/grpc-ecosystem/go-grpc-prometheus"
 	"github.com/ContextLogic/wish-sentry-go/pkg/wishsentry"
@@ -21,8 +21,8 @@ import (
 var (
 	serverCmd = &cobra.Command{
 		Use:   "server",
-		Short: "start a hello-service server",
-		Long:  `start a hello-service server`,
+		Short: "start a autobots server",
+		Long:  `start a autobots server`,
 		Run: func(cmd *cobra.Command, args []string) {
 			execServerCmd(cmd)
 		},
