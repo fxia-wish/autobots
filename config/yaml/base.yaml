@@ -1,0 +1,15 @@
+service:
+  servicename: autobots
+  shutdowntimeout: 1ms
+  shutdowndelay: 1ms
+  http:
+    port: 8080
+  grpc:
+    port: 8081
+
+clients:
+  logger:
+    level: info
+  temporal:
+    taskqueue: TRANSACTION_TASK_QUEUE
+    hostport: abfcabb359a0c41b284ad31f9f4b2c53-1857047662.us-west-1.elb.amazonaws.com:7233

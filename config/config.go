@@ -1,30 +1,69 @@
 package config
 
 import (
-	base_config "github.com/ContextLogic/go-base-service/pkg/config"
-	"github.com/ContextLogic/wish-sentry-go/pkg/wishsentry"
+	"path"
+	"runtime"
+	"time"
+
+	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
 )
 
-// AppConfig holds the configuration of the application
-type AppConfig struct {
-	EnableReflection bool `mapstructure:"enable_reflection"`
-}
+type (
+	Config struct {
+		Root    string
+		Service *ServiceConfig
+		Clients *ClientsConfig
+	}
 
-//Config is the top level service config
-type Config struct {
-	BaseConfig base_config.Config `mapstructure:"base_config"`
+	ServiceConfig struct {
+		ServiceName     string
+		ShutDownTimeOut time.Duration
+		ShutDownDelay   time.Duration
 
-	SentryConfig wishsentry.Config `mapstructure:"sentry_config"`
+		HTTP struct {
+			Port int
+		}
+		GRPC struct {
+			Port int
+		}
+	}
 
-	//Add you app's config here
-	AppConfig `mapstructure:"app_config"`
-}
+	ClientsConfig struct {
+		Logger   *LoggerConfig
+		Temporal *TemporalConfig
+	}
 
-//UnmarshalConfig unmarshals config fromo viper to Config Struct
-func UnmarshalConfig() (*Config, error) {
-	// unmarshal to server config
-	var config Config
-	err := viper.Unmarshal(&config)
-	return &config, err
+	TemporalConfig struct {
+		TaskQueue string
+		HostPort  string
+	}
+
+	LoggerConfig struct {
+		Level string
+	}
+)
+
+func Init() (*Config, error) {
+	logger := logrus.New()
+	logger.SetFormatter(&logrus.JSONFormatter{})
+	_, filename, _, _ := runtime.Caller(0)
+	config := &Config{Root: path.Join(path.Dir(filename), "../..")}
+
+	viper.AddConfigPath(path.Join(config.Root, "autobots/config/yaml"))
+	viper.SetConfigName("base")
+	logger.Infof("merge base config")
+	err := viper.MergeInConfig()
+	if err != nil {
+		return nil, err
+	}
+
+	err = viper.Unmarshal(config)
+	if err != nil {
+		return nil, err
+	}
+
+	logger.WithField("config", config).Info("config info")
+
+	return config, nil
 }
