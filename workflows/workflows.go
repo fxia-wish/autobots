@@ -4,7 +4,7 @@ import (
 	"go.temporal.io/sdk/workflow"
 
 	"github.com/ContextLogic/autobots/clients"
-	ct "github.com/ContextLogic/autobots/workflows/commerce_transaction"
+	dummy "github.com/ContextLogic/autobots/workflows/dummy"
 )
 
 type (
@@ -17,7 +17,7 @@ type (
 
 func New(clients *clients.Clients) Workflows {
 	return map[string]Workflow{
-		ct.GetNamespace(): ct.NewCommerceTransactionWorkflow(clients),
+		dummy.GetNamespace(): dummy.NewDummyWorkflow(clients),
 	}
 }
 

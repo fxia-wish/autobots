@@ -8,12 +8,12 @@ import (
 	"strings"
 	"time"
 
-	s "github.com/ContextLogic/go-base-service/pkg/service"
 	"github.com/ContextLogic/autobots/clients"
 	"github.com/ContextLogic/autobots/config"
 	"github.com/ContextLogic/autobots/models"
 	"github.com/ContextLogic/autobots/workflows"
-	ct "github.com/ContextLogic/autobots/workflows/commerce_transaction"
+	ct "github.com/ContextLogic/autobots/workflows/dummy"
+	s "github.com/ContextLogic/go-base-service/pkg/service"
 	"github.com/pborman/uuid"
 	"github.com/sirupsen/logrus"
 	common "go.temporal.io/api/common/v1"
@@ -145,10 +145,10 @@ func (h *Handlers) PlaceOrderAsync() func(w http.ResponseWriter, req *http.Reque
 		we, err := h.Clients.Temporal.Client.ExecuteWorkflow(
 			context.Background(),
 			client.StartWorkflowOptions{
-				ID:        strings.Join([]string{"commerce_transaction", ts}, "_"),
+				ID:        strings.Join([]string{"dummy", ts}, "_"),
 				TaskQueue: h.Config.Clients.Temporal.TaskQueue,
 			},
-			h.Workflows["commerce_transaction"].Entry,
+			h.Workflows["dummy"].Entry,
 			order,
 		)
 		if err != nil {

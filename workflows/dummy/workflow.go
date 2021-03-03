@@ -1,4 +1,4 @@
-package commerce_transaction
+package dummy
 
 import (
 	"context"
@@ -19,28 +19,28 @@ import (
 )
 
 type (
-	CommerceTransactionWorkflow struct {
+	DummyWorkflow struct {
 		Clients    *clients.Clients
-		Activities *CommerceTransactionActivities
+		Activities *DummyActivities
 	}
-	CommerceTransactionActivities struct {
+	DummyActivities struct {
 		Clients *clients.Clients
 		Root    string
 	}
 )
 
-func NewCommerceTransactionWorkflow(clients *clients.Clients) *CommerceTransactionWorkflow {
+func NewDummyWorkflow(clients *clients.Clients) *DummyWorkflow {
 	_, filename, _, _ := runtime.Caller(0)
-	return &CommerceTransactionWorkflow{
+	return &DummyWorkflow{
 		Clients: clients,
-		Activities: &CommerceTransactionActivities{
+		Activities: &DummyActivities{
 			Clients: clients,
 			Root:    path.Join(path.Dir(filename), "../.."),
 		},
 	}
 }
 
-func (a *CommerceTransactionActivities) ReadProfile(path string) (map[string]string, error) {
+func (a *DummyActivities) ReadProfile(path string) (map[string]string, error) {
 	profile, err := os.Open(path)
 	if err != nil {
 		return nil, err
@@ -53,7 +53,7 @@ func (a *CommerceTransactionActivities) ReadProfile(path string) (map[string]str
 	return results, nil
 }
 
-func (a *CommerceTransactionActivities) CreateOrder(ctx context.Context, order models.Order) error {
+func (a *DummyActivities) CreateOrder(ctx context.Context, order models.Order) error {
 	profile, err := a.ReadProfile(path.Join(a.Root, "flags/order.json"))
 	if err != nil {
 		return err
@@ -69,7 +69,7 @@ func (a *CommerceTransactionActivities) CreateOrder(ctx context.Context, order m
 	return errors.New("failed to create order")
 }
 
-func (a *CommerceTransactionActivities) ApprovePayment(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
+func (a *DummyActivities) ApprovePayment(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	profile, err := a.ReadProfile(path.Join(a.Root, "flags/payment.json"))
 	if err != nil {
 		return nil, err
@@ -96,7 +96,7 @@ func (a *CommerceTransactionActivities) ApprovePayment(ctx context.Context, orde
 	}
 }
 
-func (a *CommerceTransactionActivities) Shipping(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
+func (a *DummyActivities) Shipping(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	profile, err := a.ReadProfile(path.Join(a.Root, "flags/shipping.json"))
 	if err != nil {
 		return nil, err
@@ -123,7 +123,7 @@ func (a *CommerceTransactionActivities) Shipping(ctx context.Context, order mode
 	}
 }
 
-func (a *CommerceTransactionActivities) Shipped(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
+func (a *DummyActivities) Shipped(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	a.Clients.Logger.WithField("Order", order).Info("==========shipped==========")
 	return &models.OrderResponse{
 		Order:  &order,
@@ -131,7 +131,7 @@ func (a *CommerceTransactionActivities) Shipped(ctx context.Context, order model
 	}, nil
 }
 
-func (a *CommerceTransactionActivities) DeclineOrder(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
+func (a *DummyActivities) DeclineOrder(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	a.Clients.Logger.WithField("Order", order).Info("==========calling order declining service==========")
 	time.Sleep(time.Second * 5)
 	a.Clients.Logger.WithField("Order", order).Info("==========order is declined==========")
@@ -141,7 +141,7 @@ func (a *CommerceTransactionActivities) DeclineOrder(ctx context.Context, order 
 	}, nil
 }
 
-func (a *CommerceTransactionActivities) RefundOrder(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
+func (a *DummyActivities) RefundOrder(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	a.Clients.Logger.WithField("Order", order).Info("==========calling refund service==========")
 	time.Sleep(time.Second * 5)
 	a.Clients.Logger.WithField("Order", order).Info("==========refund is initiated==========")
@@ -151,7 +151,7 @@ func (a *CommerceTransactionActivities) RefundOrder(ctx context.Context, order m
 	}, nil
 }
 
-func (w *CommerceTransactionWorkflow) Register() error {
+func (w *DummyWorkflow) Register() error {
 	err := w.Clients.Temporal.RegisterNamespace(GetNamespace())
 	if err != nil && err.Error() != "Namespace already exists." {
 		return err
@@ -168,7 +168,7 @@ func (w *CommerceTransactionWorkflow) Register() error {
 	return nil
 }
 
-func (w *CommerceTransactionWorkflow) Entry(ctx workflow.Context, input interface{}) (interface{}, error) {
+func (w *DummyWorkflow) Entry(ctx workflow.Context, input interface{}) (interface{}, error) {
 	data, _ := json.Marshal(input)
 	order := models.Order{}
 	err := json.Unmarshal(data, &order)
@@ -211,5 +211,5 @@ func (w *CommerceTransactionWorkflow) Entry(ctx workflow.Context, input interfac
 }
 
 func GetNamespace() string {
-	return path.Base(reflect.TypeOf(CommerceTransactionWorkflow{}).PkgPath())
+	return path.Base(reflect.TypeOf(DummyWorkflow{}).PkgPath())
 }

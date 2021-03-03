@@ -26,7 +26,7 @@ func Init(config *config.Config) (*Clients, error) {
 		&temporal.Options{
 			ClientOptions: client.Options{
 				HostPort:  config.Clients.Temporal.HostPort,
-				Namespace: "commerce_transaction",
+				Namespace: "dummy",
 			},
 		},
 	)
