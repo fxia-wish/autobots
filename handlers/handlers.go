@@ -38,6 +38,7 @@ func New(config *config.Config, clients *clients.Clients, service *s.Service, wo
 		Workflows: workflows,
 	}
 
+	service.Mux.HandleFunc("/health", h.Health()).Methods("GET")
 	service.Mux.HandleFunc("/place-order-sync", h.PlaceOrderSync()).Methods("POST")
 	service.Mux.HandleFunc("/place-order-async", h.PlaceOrderAsync()).Methods("POST")
 	service.Mux.HandleFunc("/reset", h.Reset()).Methods("POST")
@@ -85,6 +86,12 @@ func (h *Handlers) UnmarshalShippedNotificationRequest(req *http.Request) (*mode
 		return nil, err
 	}
 	return &r, nil
+}
+
+func (h *Handlers) Health() func(w http.ResponseWriter, req *http.Request) {
+	return func(w http.ResponseWriter, req *http.Request) {
+		w.WriteHeader(http.StatusOK)
+	}
 }
 
 func (h *Handlers) PlaceOrderSync() func(w http.ResponseWriter, req *http.Request) {
