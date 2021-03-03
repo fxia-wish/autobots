@@ -152,18 +152,14 @@ func (a *DummyActivities) RefundOrder(ctx context.Context, order models.Order) (
 }
 
 func (w *DummyWorkflow) Register() error {
-	err := w.Clients.Temporal.RegisterNamespace(GetNamespace())
-	if err != nil && err.Error() != "Namespace already exists." {
-		return err
-	}
-
-	w.Clients.Temporal.Worker.RegisterWorkflow(w.Entry)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.CreateOrder)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.ApprovePayment)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.Shipping)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.Shipped)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.DeclineOrder)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.RefundOrder)
+	worker := w.Clients.Temporal.DefaultClients[w.GetNamespace()].Worker
+	worker.RegisterWorkflow(w.Entry)
+	worker.RegisterActivity(w.Activities.CreateOrder)
+	worker.RegisterActivity(w.Activities.ApprovePayment)
+	worker.RegisterActivity(w.Activities.Shipping)
+	worker.RegisterActivity(w.Activities.Shipped)
+	worker.RegisterActivity(w.Activities.DeclineOrder)
+	worker.RegisterActivity(w.Activities.RefundOrder)
 
 	return nil
 }
@@ -210,6 +206,6 @@ func (w *DummyWorkflow) Entry(ctx workflow.Context, input interface{}) (interfac
 	return response, nil
 }
 
-func GetNamespace() string {
+func (w *DummyWorkflow) GetNamespace() string {
 	return path.Base(reflect.TypeOf(DummyWorkflow{}).PkgPath())
 }

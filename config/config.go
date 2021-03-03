@@ -7,6 +7,7 @@ import (
 
 	"github.com/sirupsen/logrus"
 	"github.com/spf13/viper"
+	"go.temporal.io/sdk/worker"
 )
 
 type (
@@ -35,8 +36,14 @@ type (
 	}
 
 	TemporalConfig struct {
-		TaskQueue string
-		HostPort  string
+		TaskQueuePrefix string
+		HostPort        string
+		Clients         map[string]*TemporalClientConfig
+	}
+
+	TemporalClientConfig struct {
+		Retention int
+		Worker    worker.Options
 	}
 
 	LoggerConfig struct {

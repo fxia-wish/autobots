@@ -17,7 +17,7 @@ type (
 
 func New(clients *clients.Clients) Workflows {
 	return map[string]Workflow{
-		dummy.GetNamespace(): dummy.NewDummyWorkflow(clients),
+		"dummy": dummy.NewDummyWorkflow(clients),
 	}
 }
 

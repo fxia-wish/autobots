@@ -11,5 +11,14 @@ clients:
   logger:
     level: info
   temporal:
-    taskqueue: TRANSACTION_TASK_QUEUE
+    taskqueueprefix: TASK_QUEUE
     hostport: temporal-fe-dev.service.consul:7233
+    clients:
+      dummy:
+        retention: 1 # days
+        worker:
+          maxconcurrentactivitytaskpollers: 1
+      commercepayment:
+        retention: 1 # days
+        worker:
+          maxconcurrentactivitytaskpollers: 1
