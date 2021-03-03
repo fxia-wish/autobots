@@ -1,12 +1,12 @@
 package main
 
 import (
+	c "github.com/ContextLogic/go-base-service/pkg/config"
+	s "github.com/ContextLogic/go-base-service/pkg/service"
 	"github.com/ContextLogic/autobots/clients"
 	"github.com/ContextLogic/autobots/config"
 	"github.com/ContextLogic/autobots/handlers"
 	"github.com/ContextLogic/autobots/workflows"
-	c "github.com/ContextLogic/go-base-service/pkg/config"
-	s "github.com/ContextLogic/go-base-service/pkg/service"
 	"go.temporal.io/sdk/worker"
 )
 
