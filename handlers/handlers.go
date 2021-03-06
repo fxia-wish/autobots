@@ -111,7 +111,7 @@ func (h *Handlers) PlaceOrderSync() func(w http.ResponseWriter, req *http.Reques
 			context.Background(),
 			client.StartWorkflowOptions{
 				ID:        strings.Join([]string{dummy.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
-				TaskQueue: h.Config.Clients.Temporal.TaskQueue,
+				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, dummy.GetNamespace()),
 			},
 			h.Workflows[dummy.GetNamespace()].(*dummy.DummyWorkflow).DummyWorkflow,
 			order,
