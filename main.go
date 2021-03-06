@@ -20,7 +20,6 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	defer clients.Temporal.Client.Close()
 
 	s, err := s.NewService(
 		&c.Config{
@@ -42,9 +41,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	go clients.Temporal.Worker.Run(worker.InterruptCh())
+	for k, _ := range workflows {
+		go clients.Temporal.DefaultClients[k].Worker.Run(worker.InterruptCh())
+	}
 	handlers.New(config, clients, s, workflows)
 	if err = s.Start(); err != nil {
 		panic(err)
+	}
+	for k, _ := range workflows {
+		defer clients.Temporal.DefaultClients[k].Client.Close()
 	}
 }

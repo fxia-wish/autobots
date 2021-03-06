@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/ContextLogic/autobots/clients"
-	"github.com/ContextLogic/autobots/models"
+	"github.com/ContextLogic/autobots/workflows/dummy/models"
 	"go.temporal.io/sdk/activity"
 	"go.temporal.io/sdk/temporal"
 	"go.temporal.io/sdk/workflow"
@@ -35,7 +35,7 @@ func NewDummyWorkflow(clients *clients.Clients) *DummyWorkflow {
 		Clients: clients,
 		Activities: &DummyActivities{
 			Clients: clients,
-			Root:    path.Join(path.Dir(filename), "../.."),
+			Root:    path.Join(path.Dir(filename), "."),
 		},
 	}
 }
@@ -53,20 +53,31 @@ func (a *DummyActivities) ReadProfile(path string) (map[string]string, error) {
 	return results, nil
 }
 
-func (a *DummyActivities) DummyCreateOrder(ctx context.Context, order models.Order) error {
+func (a *DummyActivities) DummyCreateOrder(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	profile, err := a.ReadProfile(path.Join(a.Root, "flags/order.json"))
 	if err != nil {
-		return err
+		return nil, err
 	}
 
 	a.Clients.Logger.WithField("Order", order).Info("==========calling order service==========")
-	if profile["status"] == "valid" {
+	switch profile["status"] {
+	case "valid":
 		time.Sleep(time.Second * 2)
 		a.Clients.Logger.WithField("Order", order).Info("==========order is created==========")
-		return nil
+		return &models.OrderResponse{
+			Order:  &order,
+			Status: "succeeded",
+		}, nil
+	case "invalid":
+		a.Clients.Logger.WithField("Order", order).Info("==========create order failed: invalid==========")
+		return &models.OrderResponse{
+			Order:  &order,
+			Status: "invalid_order",
+		}, nil
+	default:
+		a.Clients.Logger.WithField("Order", order).Info("==========create order failed: unknown==========")
+		return nil, errors.New("failed to create order")
 	}
-	a.Clients.Logger.WithField("Order", order).Info("==========order is failed to create==========")
-	return errors.New("failed to create order")
 }
 
 func (a *DummyActivities) DummyApprovePayment(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
@@ -152,18 +163,14 @@ func (a *DummyActivities) DummyRefundOrder(ctx context.Context, order models.Ord
 }
 
 func (w *DummyWorkflow) Register() error {
-	err := w.Clients.Temporal.RegisterNamespace(GetNamespace())
-	if err != nil && err.Error() != "Namespace already exists." {
-		return err
-	}
-
-	w.Clients.Temporal.Worker.RegisterWorkflow(w.DummyWorkflow)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.DummyCreateOrder)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.DummyApprovePayment)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.DummyShipping)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.DummyShipped)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.DummyDeclineOrder)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.DummyRefundOrder)
+	worker := w.Clients.Temporal.DefaultClients[GetNamespace()].Worker
+	worker.RegisterWorkflow(w.DummyWorkflow)
+	worker.RegisterActivity(w.Activities.DummyCreateOrder)
+	worker.RegisterActivity(w.Activities.DummyApprovePayment)
+	worker.RegisterActivity(w.Activities.DummyShipping)
+	worker.RegisterActivity(w.Activities.DummyShipped)
+	worker.RegisterActivity(w.Activities.DummyDeclineOrder)
+	worker.RegisterActivity(w.Activities.DummyRefundOrder)
 
 	return nil
 }
@@ -182,13 +189,19 @@ func (w *DummyWorkflow) DummyWorkflow(ctx workflow.Context, input interface{}) (
 		RetryPolicy: &temporal.RetryPolicy{
 			InitialInterval:    time.Second,
 			BackoffCoefficient: 1.0,
-			MaximumInterval:    time.Second,
+			MaximumInterval:    time.Second * 2,
 			MaximumAttempts:    10,
 		},
 	})
-	if workflow.ExecuteActivity(ctx, w.Activities.DummyCreateOrder, order).Get(ctx, nil); err != nil {
+	err = workflow.ExecuteActivity(ctx, w.Activities.DummyCreateOrder, order).Get(ctx, &response)
+	if err != nil {
 		return nil, err
 	}
+	if response.Status != "succeeded" {
+		workflow.ExecuteActivity(ctx, w.Activities.DummyDeclineOrder, order).Get(ctx, nil)
+		return response, nil
+	}
+
 	err = workflow.ExecuteActivity(ctx, w.Activities.DummyApprovePayment, order).Get(ctx, &response)
 	if err != nil {
 		return nil, err

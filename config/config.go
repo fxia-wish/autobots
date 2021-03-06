@@ -35,8 +35,19 @@ type (
 	}
 
 	TemporalConfig struct {
-		TaskQueue string
-		HostPort  string
+		TaskQueue       string
+		TaskQueuePrefix string
+		HostPort        string
+		Clients         map[string]*TemporalClientConfig
+	}
+
+	TemporalClientConfig struct {
+		Retention int
+		Worker    *WorkerConfig
+	}
+
+	WorkerConfig struct {
+		MaxConcurrentActivityTaskPollers int
 	}
 
 	LoggerConfig struct {

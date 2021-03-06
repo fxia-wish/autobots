@@ -3,17 +3,20 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"net/http"
+	"strconv"
 	"strings"
 	"time"
 
 	"github.com/ContextLogic/autobots/clients"
 	"github.com/ContextLogic/autobots/config"
-	"github.com/ContextLogic/autobots/models"
 	"github.com/ContextLogic/autobots/workflows"
 	"github.com/ContextLogic/autobots/workflows/dummy"
+	dummy_models "github.com/ContextLogic/autobots/workflows/dummy/models"
 	"github.com/ContextLogic/autobots/workflows/wish_cash_payment"
+	wish_cash_payment_models "github.com/ContextLogic/autobots/workflows/wish_cash_payment/models"
 	s "github.com/ContextLogic/go-base-service/pkg/service"
 	"github.com/pborman/uuid"
 	"github.com/sirupsen/logrus"
@@ -48,13 +51,13 @@ func New(config *config.Config, clients *clients.Clients, service *s.Service, wo
 	return h
 }
 
-func (h *Handlers) Unmarshal(req *http.Request) (*models.Order, error) {
+func (h *Handlers) Unmarshal(req *http.Request) (*dummy_models.Order, error) {
 	b, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
 	if err != nil {
 		return nil, err
 	}
-	order := models.Order{}
+	order := dummy_models.Order{}
 	err = json.Unmarshal(b, &order)
 	if err != nil {
 		return nil, err
@@ -62,13 +65,13 @@ func (h *Handlers) Unmarshal(req *http.Request) (*models.Order, error) {
 	return &order, nil
 }
 
-func (h *Handlers) UnmarshalResetRequest(req *http.Request) (*models.ResetRequest, error) {
+func (h *Handlers) UnmarshalResetRequest(req *http.Request) (*dummy_models.ResetRequest, error) {
 	b, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
 	if err != nil {
 		return nil, err
 	}
-	r := models.ResetRequest{}
+	r := dummy_models.ResetRequest{}
 	err = json.Unmarshal(b, &r)
 	if err != nil {
 		return nil, err
@@ -76,13 +79,13 @@ func (h *Handlers) UnmarshalResetRequest(req *http.Request) (*models.ResetReques
 	return &r, nil
 }
 
-func (h *Handlers) UnmarshalShippedNotificationRequest(req *http.Request) (*models.ShippedNotificationRequest, error) {
+func (h *Handlers) UnmarshalShippedNotificationRequest(req *http.Request) (*dummy_models.ShippedNotificationRequest, error) {
 	b, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
 	if err != nil {
 		return nil, err
 	}
-	r := models.ShippedNotificationRequest{}
+	r := dummy_models.ShippedNotificationRequest{}
 	err = json.Unmarshal(b, &r)
 	if err != nil {
 		return nil, err
@@ -104,11 +107,10 @@ func (h *Handlers) PlaceOrderSync() func(w http.ResponseWriter, req *http.Reques
 			return
 		}
 
-		ts := strings.ReplaceAll(time.Now().Format(time.RFC3339), ":", "-")
-		we, err := h.Clients.Temporal.Client.ExecuteWorkflow(
+		we, err := h.Clients.Temporal.DefaultClients[dummy.GetNamespace()].Client.ExecuteWorkflow(
 			context.Background(),
 			client.StartWorkflowOptions{
-				ID:        strings.Join([]string{dummy.GetNamespace(), ts}, "_"),
+				ID:        strings.Join([]string{dummy.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
 				TaskQueue: h.Config.Clients.Temporal.TaskQueue,
 			},
 			h.Workflows[dummy.GetNamespace()].(*dummy.DummyWorkflow).DummyWorkflow,
@@ -119,7 +121,7 @@ func (h *Handlers) PlaceOrderSync() func(w http.ResponseWriter, req *http.Reques
 			return
 		}
 
-		res := models.OrderResponse{}
+		res := dummy_models.OrderResponse{}
 		err = we.Get(context.Background(), &res)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
@@ -134,7 +136,7 @@ func (h *Handlers) PlaceOrderSync() func(w http.ResponseWriter, req *http.Reques
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(&models.PlaceOrderSyncResponse{
+		json.NewEncoder(w).Encode(&dummy_models.PlaceOrderSyncResponse{
 			OrderResponse: &res,
 			WorkflowID:    we.GetID(),
 			RunID:         we.GetRunID(),
@@ -150,12 +152,11 @@ func (h *Handlers) PlaceOrderAsync() func(w http.ResponseWriter, req *http.Reque
 			return
 		}
 
-		ts := strings.ReplaceAll(time.Now().Format(time.RFC3339), ":", "-")
-		we, err := h.Clients.Temporal.Client.ExecuteWorkflow(
+		we, err := h.Clients.Temporal.DefaultClients[dummy.GetNamespace()].Client.ExecuteWorkflow(
 			context.Background(),
 			client.StartWorkflowOptions{
-				ID:        strings.Join([]string{dummy.GetNamespace(), ts}, "_"),
-				TaskQueue: h.Config.Clients.Temporal.TaskQueue,
+				ID:        strings.Join([]string{dummy.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
+				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, dummy.GetNamespace()),
 			},
 			h.Workflows[dummy.GetNamespace()].(*dummy.DummyWorkflow).DummyWorkflow,
 			order,
@@ -172,7 +173,7 @@ func (h *Handlers) PlaceOrderAsync() func(w http.ResponseWriter, req *http.Reque
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(&models.PlaceOrderAsyncResponse{
+		json.NewEncoder(w).Encode(&dummy_models.PlaceOrderAsyncResponse{
 			WorkflowID: we.GetID(),
 			RunID:      we.GetRunID(),
 		})
@@ -187,7 +188,7 @@ func (h *Handlers) Shipped() func(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		histories, err := h.Clients.Temporal.Frontend.GetWorkflowExecutionHistory(
+		histories, err := h.Clients.Temporal.WorkflowServiceClient.GetWorkflowExecutionHistory(
 			context.Background(),
 			&ws.GetWorkflowExecutionHistoryRequest{
 				Namespace: dummy.GetNamespace(),
@@ -204,14 +205,14 @@ func (h *Handlers) Shipped() func(w http.ResponseWriter, req *http.Request) {
 
 		for _, event := range histories.History.Events {
 			if event.GetEventType() == enums.EVENT_TYPE_ACTIVITY_TASK_SCHEDULED {
-				if event.GetActivityTaskScheduledEventAttributes().GetActivityType().GetName() == "Shipping" {
+				if event.GetActivityTaskScheduledEventAttributes().GetActivityType().GetName() == "DummyShipping" {
 					rr.ActivityID = event.GetActivityTaskScheduledEventAttributes().GetActivityId()
 					break
 				}
 			}
 		}
 
-		err = h.Clients.Temporal.Client.CompleteActivityByID(
+		err = h.Clients.Temporal.DefaultClients[dummy.GetNamespace()].Client.CompleteActivityByID(
 			context.Background(),
 			dummy.GetNamespace(),
 			rr.WorkflowID,
@@ -239,7 +240,7 @@ func (h *Handlers) Reset() func(w http.ResponseWriter, req *http.Request) {
 			return
 		}
 
-		histories, err := h.Clients.Temporal.Frontend.GetWorkflowExecutionHistory(
+		histories, err := h.Clients.Temporal.WorkflowServiceClient.GetWorkflowExecutionHistory(
 			context.Background(),
 			&ws.GetWorkflowExecutionHistoryRequest{
 				Namespace: dummy.GetNamespace(),
@@ -264,7 +265,7 @@ func (h *Handlers) Reset() func(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 
-		_, err = h.Clients.Temporal.Frontend.ResetWorkflowExecution(
+		_, err = h.Clients.Temporal.WorkflowServiceClient.ResetWorkflowExecution(
 			context.Background(),
 			&ws.ResetWorkflowExecutionRequest{
 				Namespace: dummy.GetNamespace(),
@@ -289,14 +290,13 @@ func (h *Handlers) Reset() func(w http.ResponseWriter, req *http.Request) {
 
 func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
-		ts := strings.ReplaceAll(time.Now().Format(time.RFC3339), ":", "-")
 		body, _ := ioutil.ReadAll(req.Body)
 		defer req.Body.Close()
-		we, err := h.Clients.Temporal.Client.ExecuteWorkflow(
+		we, err := h.Clients.Temporal.DefaultClients[wish_cash_payment.GetNamespace()].Client.ExecuteWorkflow(
 			context.Background(),
 			client.StartWorkflowOptions{
-				ID:        strings.Join([]string{wish_cash_payment.GetNamespace(), ts}, "_"),
-				TaskQueue: h.Config.Clients.Temporal.TaskQueue,
+				ID:        strings.Join([]string{wish_cash_payment.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
+				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, wish_cash_payment.GetNamespace()),
 			},
 			h.Workflows[wish_cash_payment.GetNamespace()].(*wish_cash_payment.WishCashPaymentWorkflow).WishCashPaymentWorkflow,
 			req.Header,
@@ -307,7 +307,7 @@ func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.
 			return
 		}
 
-		response := &models.WishCashPaymentApprovePaymentResponse{}
+		response := &wish_cash_payment_models.WishCashPaymentApprovePaymentResponse{}
 		err = we.Get(context.Background(), &response)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
@@ -322,7 +322,7 @@ func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(&models.WishCashPaymentResponse{
+		json.NewEncoder(w).Encode(&wish_cash_payment_models.WishCashPaymentResponse{
 			TransactionID: response.Data.TransactionID,
 			WorkflowID:    we.GetID(),
 			RunID:         we.GetRunID(),

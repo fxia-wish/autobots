@@ -5,7 +5,6 @@ import (
 	"github.com/ContextLogic/autobots/clients/temporal"
 	"github.com/ContextLogic/autobots/config"
 	"github.com/sirupsen/logrus"
-	"go.temporal.io/sdk/client"
 )
 
 // Clients defines the clients object
@@ -21,15 +20,7 @@ func Init(config *config.Config) (*Clients, error) {
 		return nil, err
 	}
 
-	temporal, err := temporal.New(
-		config.Clients.Temporal,
-		&temporal.Options{
-			ClientOptions: client.Options{
-				HostPort:  config.Clients.Temporal.HostPort,
-				Namespace: "wish_cash_payment",
-			},
-		},
-	)
+	temporal, err := temporal.New(config.Clients.Temporal)
 	if err != nil {
 		return nil, err
 	}

@@ -10,11 +10,11 @@ import (
 	"net/http"
 	"path"
 	"reflect"
-	"runtime"
 	"time"
 
 	"github.com/ContextLogic/autobots/clients"
-	"github.com/ContextLogic/autobots/models"
+	"github.com/ContextLogic/autobots/workflows/wish_cash_payment/models"
+	"github.com/sirupsen/logrus"
 	"go.temporal.io/sdk/temporal"
 	"go.temporal.io/sdk/workflow"
 )
@@ -26,23 +26,21 @@ type (
 	}
 	WishCashPaymentActivities struct {
 		Clients *clients.Clients
-		Root    string
 	}
 )
 
 func NewWishCashPaymentWorkflow(clients *clients.Clients) *WishCashPaymentWorkflow {
-	_, filename, _, _ := runtime.Caller(0)
 	return &WishCashPaymentWorkflow{
 		Clients: clients,
 		Activities: &WishCashPaymentActivities{
 			Clients: clients,
-			Root:    path.Join(path.Dir(filename), "../.."),
 		},
 	}
 }
 
-func (a *WishCashPaymentActivities) WishCashPaymentCreateOrder(ctx context.Context, h http.Header, body []byte) (*models.WishCashPaymentCreateOrderResponse, error) {
-	req, err := http.NewRequest(http.MethodPost, "http://lshu.corp.contextlogic.com/api/temporal-payment/create-order", bytes.NewBuffer(body))
+func (a *WishCashPaymentActivities) WishCashPaymentCreateOrder(ctx context.Context, h http.Header, data []byte) (*models.WishCashPaymentCreateOrderResponse, error) {
+	a.Clients.Logger.WithFields(logrus.Fields{"headers": h, "body": string(data)}).Info("==========calling wish-frontend to create order==========")
+	req, err := http.NewRequest(http.MethodPost, "http://lshu.corp.contextlogic.com/api/temporal-payment/create-order", bytes.NewBuffer(data))
 	if err != nil {
 		return nil, err
 	}
@@ -67,8 +65,9 @@ func (a *WishCashPaymentActivities) WishCashPaymentCreateOrder(ctx context.Conte
 	return response, nil
 }
 
-func (a *WishCashPaymentActivities) WishCashPaymentApprovePayment(ctx context.Context, h http.Header, body []byte) (*models.WishCashPaymentApprovePaymentResponse, error) {
-	req, err := http.NewRequest(http.MethodPost, "http://lshu.corp.contextlogic.com/api/temporal-payment/approve-payment", bytes.NewBuffer(body))
+func (a *WishCashPaymentActivities) WishCashPaymentApprovePayment(ctx context.Context, h http.Header, data []byte) (*models.WishCashPaymentApprovePaymentResponse, error) {
+	a.Clients.Logger.WithFields(logrus.Fields{"headers": h, "body": string(data)}).Info("==========calling wish-frontend to approve payment==========")
+	req, err := http.NewRequest(http.MethodPost, "http://lshu.corp.contextlogic.com/api/temporal-payment/approve-payment", bytes.NewBuffer(data))
 	if err != nil {
 		return nil, err
 	}
@@ -94,19 +93,15 @@ func (a *WishCashPaymentActivities) WishCashPaymentApprovePayment(ctx context.Co
 }
 
 func (w *WishCashPaymentWorkflow) Register() error {
-	err := w.Clients.Temporal.RegisterNamespace(GetNamespace())
-	if err != nil && err.Error() != "Namespace already exists." {
-		return err
-	}
-
-	w.Clients.Temporal.Worker.RegisterWorkflow(w.WishCashPaymentWorkflow)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.WishCashPaymentCreateOrder)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.WishCashPaymentApprovePayment)
+	worker := w.Clients.Temporal.DefaultClients[GetNamespace()].Worker
+	worker.RegisterWorkflow(w.WishCashPaymentWorkflow)
+	worker.RegisterActivity(w.Activities.WishCashPaymentCreateOrder)
+	worker.RegisterActivity(w.Activities.WishCashPaymentApprovePayment)
 
 	return nil
 }
 
-func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, h http.Header, body []byte) (interface{}, error) {
+func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, h http.Header, data []byte) (interface{}, error) {
 	ctx = workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
 		StartToCloseTimeout: time.Minute,
 		RetryPolicy: &temporal.RetryPolicy{
@@ -117,7 +112,7 @@ func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, 
 		},
 	})
 	createOrderResponse := &models.WishCashPaymentCreateOrderResponse{}
-	if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentCreateOrder, h, body).Get(ctx, createOrderResponse); err != nil {
+	if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentCreateOrder, h, data).Get(ctx, createOrderResponse); err != nil {
 		return nil, err
 	}
 
@@ -125,9 +120,9 @@ func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, 
 		return nil, errors.New("transaction not found")
 	}
 
-	bodyStr := fmt.Sprintf("%s&transaction_id=%s", string(body), createOrderResponse.Data.TransactionID)
+	body := fmt.Sprintf("%s&transaction_id=%s", string(data), createOrderResponse.Data.TransactionID)
 	approvePaymentResponse := &models.WishCashPaymentApprovePaymentResponse{}
-	if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentApprovePayment, h, []byte(bodyStr)).Get(ctx, approvePaymentResponse); err != nil {
+	if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentApprovePayment, h, []byte(body)).Get(ctx, approvePaymentResponse); err != nil {
 		return nil, err
 	}
 	return approvePaymentResponse, nil
