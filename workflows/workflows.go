@@ -1,23 +1,22 @@
 package workflows
 
 import (
-	"go.temporal.io/sdk/workflow"
-
 	"github.com/ContextLogic/autobots/clients"
 	dummy "github.com/ContextLogic/autobots/workflows/dummy"
+	"github.com/ContextLogic/autobots/workflows/wish_cash_payment"
 )
 
 type (
 	Workflows map[string]Workflow
 	Workflow  interface {
-		Entry(workflow.Context, interface{}) (interface{}, error)
 		Register() error
 	}
 )
 
 func New(clients *clients.Clients) Workflows {
 	return map[string]Workflow{
-		dummy.GetNamespace(): dummy.NewDummyWorkflow(clients),
+		dummy.GetNamespace():             dummy.NewDummyWorkflow(clients),
+		wish_cash_payment.GetNamespace(): wish_cash_payment.NewWishCashPaymentWorkflow(clients),
 	}
 }
 

@@ -12,7 +12,8 @@ import (
 	"github.com/ContextLogic/autobots/config"
 	"github.com/ContextLogic/autobots/models"
 	"github.com/ContextLogic/autobots/workflows"
-	ct "github.com/ContextLogic/autobots/workflows/dummy"
+	"github.com/ContextLogic/autobots/workflows/dummy"
+	"github.com/ContextLogic/autobots/workflows/wish_cash_payment"
 	s "github.com/ContextLogic/go-base-service/pkg/service"
 	"github.com/pborman/uuid"
 	"github.com/sirupsen/logrus"
@@ -43,6 +44,7 @@ func New(config *config.Config, clients *clients.Clients, service *s.Service, wo
 	service.Mux.HandleFunc("/place-order-async", h.PlaceOrderAsync()).Methods("POST")
 	service.Mux.HandleFunc("/reset", h.Reset()).Methods("POST")
 	service.Mux.HandleFunc("/shipped", h.Shipped()).Methods("POST")
+	service.Mux.HandleFunc("/start-wish-cash-payment", h.StartWishCashPayment()).Methods("POST")
 	return h
 }
 
@@ -106,10 +108,10 @@ func (h *Handlers) PlaceOrderSync() func(w http.ResponseWriter, req *http.Reques
 		we, err := h.Clients.Temporal.Client.ExecuteWorkflow(
 			context.Background(),
 			client.StartWorkflowOptions{
-				ID:        strings.Join([]string{ct.GetNamespace(), ts}, "_"),
+				ID:        strings.Join([]string{dummy.GetNamespace(), ts}, "_"),
 				TaskQueue: h.Config.Clients.Temporal.TaskQueue,
 			},
-			h.Workflows[ct.GetNamespace()].Entry,
+			h.Workflows[dummy.GetNamespace()].(*dummy.DummyWorkflow).DummyWorkflow,
 			order,
 		)
 		if err != nil {
@@ -152,10 +154,10 @@ func (h *Handlers) PlaceOrderAsync() func(w http.ResponseWriter, req *http.Reque
 		we, err := h.Clients.Temporal.Client.ExecuteWorkflow(
 			context.Background(),
 			client.StartWorkflowOptions{
-				ID:        strings.Join([]string{"dummy", ts}, "_"),
+				ID:        strings.Join([]string{dummy.GetNamespace(), ts}, "_"),
 				TaskQueue: h.Config.Clients.Temporal.TaskQueue,
 			},
-			h.Workflows["dummy"].Entry,
+			h.Workflows[dummy.GetNamespace()].(*dummy.DummyWorkflow).DummyWorkflow,
 			order,
 		)
 		if err != nil {
@@ -188,7 +190,7 @@ func (h *Handlers) Shipped() func(w http.ResponseWriter, req *http.Request) {
 		histories, err := h.Clients.Temporal.Frontend.GetWorkflowExecutionHistory(
 			context.Background(),
 			&ws.GetWorkflowExecutionHistoryRequest{
-				Namespace: ct.GetNamespace(),
+				Namespace: dummy.GetNamespace(),
 				Execution: &common.WorkflowExecution{
 					WorkflowId: rr.WorkflowID,
 					RunId:      rr.RunID,
@@ -211,7 +213,7 @@ func (h *Handlers) Shipped() func(w http.ResponseWriter, req *http.Request) {
 
 		err = h.Clients.Temporal.Client.CompleteActivityByID(
 			context.Background(),
-			ct.GetNamespace(),
+			dummy.GetNamespace(),
 			rr.WorkflowID,
 			rr.RunID,
 			rr.ActivityID,
@@ -240,7 +242,7 @@ func (h *Handlers) Reset() func(w http.ResponseWriter, req *http.Request) {
 		histories, err := h.Clients.Temporal.Frontend.GetWorkflowExecutionHistory(
 			context.Background(),
 			&ws.GetWorkflowExecutionHistoryRequest{
-				Namespace: ct.GetNamespace(),
+				Namespace: dummy.GetNamespace(),
 				Execution: &common.WorkflowExecution{
 					WorkflowId: rr.WorkflowID,
 					RunId:      rr.RunID,
@@ -265,7 +267,7 @@ func (h *Handlers) Reset() func(w http.ResponseWriter, req *http.Request) {
 		_, err = h.Clients.Temporal.Frontend.ResetWorkflowExecution(
 			context.Background(),
 			&ws.ResetWorkflowExecutionRequest{
-				Namespace: ct.GetNamespace(),
+				Namespace: dummy.GetNamespace(),
 				WorkflowExecution: &common.WorkflowExecution{
 					WorkflowId: rr.WorkflowID,
 					RunId:      rr.RunID,
@@ -282,5 +284,48 @@ func (h *Handlers) Reset() func(w http.ResponseWriter, req *http.Request) {
 
 		w.WriteHeader(200)
 		json.NewEncoder(w).Encode("ok")
+	}
+}
+
+func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.Request) {
+	return func(w http.ResponseWriter, req *http.Request) {
+		ts := strings.ReplaceAll(time.Now().Format(time.RFC3339), ":", "-")
+		body, _ := ioutil.ReadAll(req.Body)
+		defer req.Body.Close()
+		we, err := h.Clients.Temporal.Client.ExecuteWorkflow(
+			context.Background(),
+			client.StartWorkflowOptions{
+				ID:        strings.Join([]string{wish_cash_payment.GetNamespace(), ts}, "_"),
+				TaskQueue: h.Config.Clients.Temporal.TaskQueue,
+			},
+			h.Workflows[wish_cash_payment.GetNamespace()].(*wish_cash_payment.WishCashPaymentWorkflow).WishCashPaymentWorkflow,
+			req.Header,
+			body,
+		)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+
+		response := &models.WishCashPaymentApprovePaymentResponse{}
+		err = we.Get(context.Background(), &response)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+
+		h.Clients.Logger.WithFields(logrus.Fields{
+			"Response":   response,
+			"WorkflowID": we.GetID(),
+			"RunID":      we.GetRunID(),
+		}).Info("workflow execution completed")
+
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(200)
+		json.NewEncoder(w).Encode(&models.WishCashPaymentResponse{
+			TransactionID: response.Data.TransactionID,
+			WorkflowID:    we.GetID(),
+			RunID:         we.GetRunID(),
+		})
 	}
 }

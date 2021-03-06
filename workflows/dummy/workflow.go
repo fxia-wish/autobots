@@ -53,7 +53,7 @@ func (a *DummyActivities) ReadProfile(path string) (map[string]string, error) {
 	return results, nil
 }
 
-func (a *DummyActivities) CreateOrder(ctx context.Context, order models.Order) error {
+func (a *DummyActivities) DummyCreateOrder(ctx context.Context, order models.Order) error {
 	profile, err := a.ReadProfile(path.Join(a.Root, "flags/order.json"))
 	if err != nil {
 		return err
@@ -69,7 +69,7 @@ func (a *DummyActivities) CreateOrder(ctx context.Context, order models.Order) e
 	return errors.New("failed to create order")
 }
 
-func (a *DummyActivities) ApprovePayment(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
+func (a *DummyActivities) DummyApprovePayment(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	profile, err := a.ReadProfile(path.Join(a.Root, "flags/payment.json"))
 	if err != nil {
 		return nil, err
@@ -96,7 +96,7 @@ func (a *DummyActivities) ApprovePayment(ctx context.Context, order models.Order
 	}
 }
 
-func (a *DummyActivities) Shipping(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
+func (a *DummyActivities) DummyShipping(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	profile, err := a.ReadProfile(path.Join(a.Root, "flags/shipping.json"))
 	if err != nil {
 		return nil, err
@@ -123,7 +123,7 @@ func (a *DummyActivities) Shipping(ctx context.Context, order models.Order) (*mo
 	}
 }
 
-func (a *DummyActivities) Shipped(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
+func (a *DummyActivities) DummyShipped(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	a.Clients.Logger.WithField("Order", order).Info("==========shipped==========")
 	return &models.OrderResponse{
 		Order:  &order,
@@ -131,7 +131,7 @@ func (a *DummyActivities) Shipped(ctx context.Context, order models.Order) (*mod
 	}, nil
 }
 
-func (a *DummyActivities) DeclineOrder(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
+func (a *DummyActivities) DummyDeclineOrder(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	a.Clients.Logger.WithField("Order", order).Info("==========calling order declining service==========")
 	time.Sleep(time.Second * 5)
 	a.Clients.Logger.WithField("Order", order).Info("==========order is declined==========")
@@ -141,7 +141,7 @@ func (a *DummyActivities) DeclineOrder(ctx context.Context, order models.Order) 
 	}, nil
 }
 
-func (a *DummyActivities) RefundOrder(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
+func (a *DummyActivities) DummyRefundOrder(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	a.Clients.Logger.WithField("Order", order).Info("==========calling refund service==========")
 	time.Sleep(time.Second * 5)
 	a.Clients.Logger.WithField("Order", order).Info("==========refund is initiated==========")
@@ -157,18 +157,18 @@ func (w *DummyWorkflow) Register() error {
 		return err
 	}
 
-	w.Clients.Temporal.Worker.RegisterWorkflow(w.Entry)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.CreateOrder)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.ApprovePayment)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.Shipping)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.Shipped)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.DeclineOrder)
-	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.RefundOrder)
+	w.Clients.Temporal.Worker.RegisterWorkflow(w.DummyWorkflow)
+	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.DummyCreateOrder)
+	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.DummyApprovePayment)
+	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.DummyShipping)
+	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.DummyShipped)
+	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.DummyDeclineOrder)
+	w.Clients.Temporal.Worker.RegisterActivity(w.Activities.DummyRefundOrder)
 
 	return nil
 }
 
-func (w *DummyWorkflow) Entry(ctx workflow.Context, input interface{}) (interface{}, error) {
+func (w *DummyWorkflow) DummyWorkflow(ctx workflow.Context, input interface{}) (interface{}, error) {
 	data, _ := json.Marshal(input)
 	order := models.Order{}
 	err := json.Unmarshal(data, &order)
@@ -186,26 +186,26 @@ func (w *DummyWorkflow) Entry(ctx workflow.Context, input interface{}) (interfac
 			MaximumAttempts:    10,
 		},
 	})
-	if workflow.ExecuteActivity(ctx, w.Activities.CreateOrder, order).Get(ctx, nil); err != nil {
+	if workflow.ExecuteActivity(ctx, w.Activities.DummyCreateOrder, order).Get(ctx, nil); err != nil {
 		return nil, err
 	}
-	err = workflow.ExecuteActivity(ctx, w.Activities.ApprovePayment, order).Get(ctx, &response)
+	err = workflow.ExecuteActivity(ctx, w.Activities.DummyApprovePayment, order).Get(ctx, &response)
 	if err != nil {
 		return nil, err
 	}
 	if response.Status != "succeeded" {
-		workflow.ExecuteActivity(ctx, w.Activities.DeclineOrder, order).Get(ctx, nil)
+		workflow.ExecuteActivity(ctx, w.Activities.DummyDeclineOrder, order).Get(ctx, nil)
 		return response, nil
 	}
-	err = workflow.ExecuteActivity(ctx, w.Activities.Shipping, order).Get(ctx, &response)
+	err = workflow.ExecuteActivity(ctx, w.Activities.DummyShipping, order).Get(ctx, &response)
 	if err != nil {
 		return nil, err
 	}
 	if response.Status != "succeeded" {
-		workflow.ExecuteActivity(ctx, w.Activities.DeclineOrder, order).Get(ctx, nil)
-		workflow.ExecuteActivity(ctx, w.Activities.RefundOrder, order).Get(ctx, &response)
+		workflow.ExecuteActivity(ctx, w.Activities.DummyDeclineOrder, order).Get(ctx, nil)
+		workflow.ExecuteActivity(ctx, w.Activities.DummyRefundOrder, order).Get(ctx, &response)
 	} else {
-		workflow.ExecuteActivity(ctx, w.Activities.Shipped, order).Get(ctx, &response)
+		workflow.ExecuteActivity(ctx, w.Activities.DummyShipped, order).Get(ctx, &response)
 	}
 	return response, nil
 }
