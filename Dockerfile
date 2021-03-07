@@ -30,6 +30,6 @@ ENV LD_LIBRARY_PATH=/usr/lib
 COPY --from=build /usr/lib /lib /usr/lib/
 COPY --from=build /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/bin/${ITA_PROJECT_NAME} /bin/${ITA_PROJECT_NAME}
 COPY --from=build /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/config /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/config
-COPY --from=build /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/flags /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/flags
+COPY --from=build /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/workflows/dummy/flags /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/workflows/dummy/flags
 
 CMD [ "sh", "-c", "${BIN_NAME}" ]
