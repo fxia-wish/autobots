@@ -307,7 +307,7 @@ func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.
 			return
 		}
 
-		response := &wish_cash_payment_models.WishCashPaymentApprovePaymentResponse{}
+		response := &wish_cash_payment_models.WishCashPaymentResponse{}
 		err = we.Get(context.Background(), &response)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
@@ -322,10 +322,8 @@ func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
-		json.NewEncoder(w).Encode(&wish_cash_payment_models.WishCashPaymentResponse{
-			TransactionID: response.Data.TransactionID,
-			WorkflowID:    we.GetID(),
-			RunID:         we.GetRunID(),
-		})
+		response.WorkflowID = we.GetID()
+		response.RunID = we.GetRunID()
+		json.NewEncoder(w).Encode(response)
 	}
 }
