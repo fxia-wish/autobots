@@ -1,11 +1,9 @@
 package wish_cash_payment
 
 import (
-	"bytes"
 	"context"
 	"encoding/json"
 	"fmt"
-	"io/ioutil"
 	"net/http"
 	"path"
 	"reflect"
@@ -38,9 +36,10 @@ func NewWishCashPaymentWorkflow(clients *clients.Clients) *WishCashPaymentWorkfl
 }
 
 func (a *WishCashPaymentActivities) WishCashPaymentCreateOrder(ctx context.Context, h http.Header, data []byte) (*models.WishCashPaymentCreateOrderResponse, error) {
-	a.Clients.Logger.WithFields(logrus.Fields{"headers": h, "body": string(data)}).Info("==========calling wish-frontend to create order==========")
+	a.Clients.Logger.Info("==========calling wish-fe to create order: started==========")
+	a.Clients.Logger.WithFields(logrus.Fields{"headers": h, "body": string(data)}).Info("create order request info")
 
-	bytes, err := HTTPCall(h, data, "create-order")
+	bytes, err := a.Clients.WishFrontend.Post(h, data, "api/temporal-payment/create-order")
 	if err != nil {
 		return nil, err
 	}
@@ -50,13 +49,17 @@ func (a *WishCashPaymentActivities) WishCashPaymentCreateOrder(ctx context.Conte
 		return nil, err
 	}
 
+	a.Clients.Logger.Info("==========calling wish-fe to create order: finished==========")
+	a.Clients.Logger.WithFields(logrus.Fields{"response": response}).Info("create order response info")
+
 	return response, nil
 }
 
 func (a *WishCashPaymentActivities) WishCashPaymentClearCart(ctx context.Context, h http.Header, data []byte) (*models.WishCashPaymentClearCartResponse, error) {
-	a.Clients.Logger.WithFields(logrus.Fields{"headers": h, "body": string(data)}).Info("==========calling wish-frontend to clear cart==========")
+	a.Clients.Logger.Info("==========calling wish-fe to clear cart: started==========")
+	a.Clients.Logger.WithFields(logrus.Fields{"headers": h, "body": string(data)}).Info("clear cart request info")
 
-	bytes, err := HTTPCall(h, data, "clear-cart")
+	bytes, err := a.Clients.WishFrontend.Post(h, data, "api/temporal-payment/clear-cart")
 	if err != nil {
 		return nil, err
 	}
@@ -66,13 +69,17 @@ func (a *WishCashPaymentActivities) WishCashPaymentClearCart(ctx context.Context
 		return nil, err
 	}
 
+	a.Clients.Logger.Info("==========calling wish-fe to clear cart: finished==========")
+	a.Clients.Logger.WithFields(logrus.Fields{"response": response}).Info("clear cart response info")
+
 	return response, nil
 }
 
 func (a *WishCashPaymentActivities) WishCashPaymentApprovePayment(ctx context.Context, h http.Header, data []byte) (*models.WishCashPaymentApprovePaymentResponse, error) {
-	a.Clients.Logger.WithFields(logrus.Fields{"headers": h, "body": string(data)}).Info("==========calling wish-frontend to approve payment==========")
+	a.Clients.Logger.Info("==========calling wish-fe to approve payment: started==========")
+	a.Clients.Logger.WithFields(logrus.Fields{"headers": h, "body": string(data)}).Info("approve payment request info")
 
-	bytes, err := HTTPCall(h, data, "approve-payment")
+	bytes, err := a.Clients.WishFrontend.Post(h, data, "api/temporal-payment/approve-payment")
 	if err != nil {
 		return nil, err
 	}
@@ -82,13 +89,17 @@ func (a *WishCashPaymentActivities) WishCashPaymentApprovePayment(ctx context.Co
 		return nil, err
 	}
 
+	a.Clients.Logger.Info("==========calling wish-fe to approve payment: finished==========")
+	a.Clients.Logger.WithFields(logrus.Fields{"response": response}).Info("approve payment response info")
+
 	return response, nil
 }
 
 func (a *WishCashPaymentActivities) WishCashPaymentDeclinePayment(ctx context.Context, h http.Header, data []byte) (*models.WishCashPaymentDeclinePaymentResponse, error) {
-	a.Clients.Logger.WithFields(logrus.Fields{"headers": h, "body": string(data)}).Info("==========calling wish-frontend to decline payment==========")
+	a.Clients.Logger.Info("==========calling wish-fe to decline payment: started==========")
+	a.Clients.Logger.WithFields(logrus.Fields{"headers": h, "body": string(data)}).Info("decline payment request info")
 
-	bytes, err := HTTPCall(h, data, "decline-payment")
+	bytes, err := a.Clients.WishFrontend.Post(h, data, "api/temporal-payment/decline-payment")
 	if err != nil {
 		return nil, err
 	}
@@ -97,6 +108,8 @@ func (a *WishCashPaymentActivities) WishCashPaymentDeclinePayment(ctx context.Co
 	if err = json.Unmarshal(bytes, response); err != nil {
 		return nil, err
 	}
+	a.Clients.Logger.Info("==========calling wish-fe to decline payment: finished==========")
+	a.Clients.Logger.WithFields(logrus.Fields{"response": response}).Info("decline payment response info")
 
 	return response, nil
 }
@@ -161,35 +174,18 @@ func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, 
 	if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentApprovePayment, h, []byte(body)).Get(ctx, approvePaymentResponse); err != nil {
 		return nil, err
 	}
-	return &models.WishCashPaymentResponse{
+
+	response := &models.WishCashPaymentResponse{
 		Data: models.WishCashPaymentResponseData{
 			Msg:           approvePaymentResponse.Msg,
+			Code:          approvePaymentResponse.Code,
 			TransactionID: approvePaymentResponse.Data.TransactionID,
 		},
-	}, nil
+	}
+	w.Clients.Logger.WithField("response", response).Info("workflow response info")
+	return response, nil
 }
 
 func GetNamespace() string {
 	return path.Base(reflect.TypeOf(WishCashPaymentWorkflow{}).PkgPath())
-}
-
-func HTTPCall(h http.Header, data []byte, api string) ([]byte, error) {
-	url := fmt.Sprintf("http://lshu.corp.contextlogic.com/api/temporal-payment/%s", api)
-	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(data))
-	if err != nil {
-		return nil, err
-	}
-
-	req.Header = h
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		return nil, err
-	}
-	defer resp.Body.Close()
-
-	bytes, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return nil, err
-	}
-	return bytes, nil
 }

@@ -22,3 +22,6 @@ clients:
         retention: 1 # days
         worker:
           maxconcurrentactivitytaskpollers: 1
+  wishfrontend:
+    host: nginx #lshu.corp.contextlogic.com
+    timeout: 30

@@ -3,14 +3,16 @@ package clients
 import (
 	"github.com/ContextLogic/autobots/clients/logger"
 	"github.com/ContextLogic/autobots/clients/temporal"
+	"github.com/ContextLogic/autobots/clients/wish_frontend"
 	"github.com/ContextLogic/autobots/config"
 	"github.com/sirupsen/logrus"
 )
 
 // Clients defines the clients object
 type Clients struct {
-	Temporal *temporal.Temporal
-	Logger   *logrus.Logger
+	Temporal     *temporal.Temporal
+	WishFrontend *wish_frontend.WishFrontend
+	Logger       *logrus.Logger
 }
 
 // Init initiates the clients object
@@ -26,7 +28,8 @@ func Init(config *config.Config) (*Clients, error) {
 	}
 
 	return &Clients{
-		Temporal: temporal,
-		Logger:   logger,
+		Temporal:     temporal,
+		WishFrontend: wish_frontend.New(config.Clients.WishFrontend),
+		Logger:       logger,
 	}, nil
 }

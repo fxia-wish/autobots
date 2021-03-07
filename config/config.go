@@ -30,8 +30,9 @@ type (
 	}
 
 	ClientsConfig struct {
-		Logger   *LoggerConfig
-		Temporal *TemporalConfig
+		Logger       *LoggerConfig
+		Temporal     *TemporalConfig
+		WishFrontend *WishFrontendConfig
 	}
 
 	TemporalConfig struct {
@@ -52,6 +53,11 @@ type (
 
 	LoggerConfig struct {
 		Level string
+	}
+
+	WishFrontendConfig struct {
+		Host    string
+		Timeout int
 	}
 )
 

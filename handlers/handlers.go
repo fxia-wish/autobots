@@ -313,17 +313,15 @@ func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.
 			http.Error(w, err.Error(), 500)
 			return
 		}
+		response.WorkflowID = we.GetID()
+		response.RunID = we.GetRunID()
 
 		h.Clients.Logger.WithFields(logrus.Fields{
-			"Response":   response,
-			"WorkflowID": we.GetID(),
-			"RunID":      we.GetRunID(),
+			"api response": response,
 		}).Info("workflow execution completed")
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
-		response.WorkflowID = we.GetID()
-		response.RunID = we.GetRunID()
 		json.NewEncoder(w).Encode(response)
 	}
 }
