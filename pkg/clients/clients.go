@@ -1,10 +1,10 @@
 package clients
 
 import (
-	"github.com/ContextLogic/pkg/autobots/clients/logger"
-	"github.com/ContextLogic/pkg/autobots/clients/temporal"
-	"github.com/ContextLogic/pkg/autobots/clients/wish_frontend"
-	"github.com/ContextLogic/pkg/autobots/config"
+	"github.com/ContextLogic/autobots/pkg/clients/logger"
+	"github.com/ContextLogic/autobots/pkg/clients/temporal"
+	"github.com/ContextLogic/autobots/pkg/clients/wish_frontend"
+	"github.com/ContextLogic/autobots/pkg/config"
 	"github.com/sirupsen/logrus"
 )
 

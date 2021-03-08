@@ -19,7 +19,7 @@ WORKDIR /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}
 
 RUN git config --global url.https://gitlab-ci-token:${GITLAB_ACCESS_TOKEN}@gitlab.i.wish.com/ContextLogic.insteadof 'https://github.com/ContextLogic'
 RUN echo ${ITA_PROJECT_NAME}
-RUN GOFLAGS=-mod=vendor GOOS=linux GOARCH=amd64 GO111MODULE=on go build -o bin/${ITA_PROJECT_NAME} github.com/ContextLogic/${ITA_PROJECT_NAME}
+RUN GOFLAGS=-mod=vendor GOOS=linux GOARCH=amd64 GO111MODULE=on go build -o bin/${ITA_PROJECT_NAME} github.com/ContextLogic/${ITA_PROJECT_NAME}/pkg
 
 FROM registry-gitlab.i.wish.com/contextlogic/tooling-image/node:13.12.0-alpine as ui_build
 
@@ -29,7 +29,7 @@ ENV LD_LIBRARY_PATH=/usr/lib
 
 COPY --from=build /usr/lib /lib /usr/lib/
 COPY --from=build /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/bin/${ITA_PROJECT_NAME} /bin/${ITA_PROJECT_NAME}
-COPY --from=build /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/config /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/config
-COPY --from=build /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/workflows/dummy/flags /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/workflows/dummy/flags
+COPY --from=build /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/pkg/config /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/pkg/config
+COPY --from=build /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/pkg/workflows/dummy/flags /go/src/github.com/ContextLogic/${ITA_PROJECT_NAME}/pkg/workflows/dummy/flags
 
 CMD [ "sh", "-c", "${BIN_NAME}" ]

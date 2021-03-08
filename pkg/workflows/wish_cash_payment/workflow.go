@@ -9,8 +9,8 @@ import (
 	"reflect"
 	"time"
 
-	"github.com/ContextLogic/pkg/autobots/clients"
-	"github.com/ContextLogic/pkg/autobots/workflows/wish_cash_payment/models"
+	"github.com/ContextLogic/autobots/pkg/clients"
+	"github.com/ContextLogic/autobots/pkg/workflows/wish_cash_payment/models"
 	"github.com/sirupsen/logrus"
 	"go.temporal.io/sdk/temporal"
 	"go.temporal.io/sdk/workflow"

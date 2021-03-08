@@ -3,7 +3,7 @@ package logger
 import (
 	"os"
 
-	"github.com/ContextLogic/pkg/autobots/config"
+	"github.com/ContextLogic/autobots/pkg/config"
 	"github.com/sirupsen/logrus"
 )
 
