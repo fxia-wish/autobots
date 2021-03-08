@@ -142,7 +142,7 @@ func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, 
 
 	if createOrderResponse.Data.FraudActionTaken != "" {
 		declinePaymentResponse := &models.WishCashPaymentDeclinePaymentResponse{}
-		body := fmt.Sprintf("%s&fraud_action_taken=%s", string(data), createOrderResponse.Data.FraudActionTaken)
+		body := fmt.Sprintf("%s&fraud_action_taken=%s&transaction_id=%s", string(data), createOrderResponse.Data.FraudActionTaken, createOrderResponse.Data.TransactionID)
 		if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentDeclinePayment, h, []byte(body)).Get(ctx, declinePaymentResponse); err != nil {
 			return nil, err
 		}
