@@ -14,7 +14,7 @@ build: build/$(UNAME_S) ## build binaries based on the OS
 build/$(UNAME_S):
 	@echo "$@"
 	@rm -rf bin/*
-	@GOOS=$(UNAME_S) CGO_ENABLED=1 GO111MODULE=on go build -o $(BUILD_DIR)/$(SERVICE_NAME).$(UNAME_S) github.com/ContextLogic/$(SERVICE_NAME)/pkg
+	@GOOS=$(UNAME_S) GO111MODULE=on go build -o $(BUILD_DIR)/$(SERVICE_NAME).$(UNAME_S) github.com/ContextLogic/$(SERVICE_NAME)/pkg
 
 vendor: go.mod go.sum ## pull the vendor pkgs for deps
 	@GO111MODULE=on go mod vendor
