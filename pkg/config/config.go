@@ -77,7 +77,7 @@ func Init(env ...Env) (*Config, error) {
 	_, filename, _, _ := runtime.Caller(0)
 	config := &Config{Root: path.Join(path.Dir(filename), "../..")}
 
-	viper.AddConfigPath(path.Join(config.Root, "autobots/config/yaml"))
+	viper.AddConfigPath(path.Join(config.Root, "pkg/config/yaml"))
 	viper.SetConfigName("base")
 	logger.Infof("merge base config")
 	err := viper.MergeInConfig()
