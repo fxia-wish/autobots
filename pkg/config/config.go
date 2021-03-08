@@ -1,6 +1,8 @@
 package config
 
 import (
+	"errors"
+	"os"
 	"path"
 	"runtime"
 	"time"
@@ -9,7 +11,15 @@ import (
 	"github.com/spf13/viper"
 )
 
+const (
+	Dev       Env = "dev"
+	Ec2       Env = "ec2"
+	Local     Env = "local"
+	ConfigEnv     = "CONFIG_ENVIRONMENT"
+)
+
 type (
+	Env    string
 	Config struct {
 		Root    string
 		Service *ServiceConfig
@@ -61,7 +71,7 @@ type (
 	}
 )
 
-func Init() (*Config, error) {
+func Init(env ...Env) (*Config, error) {
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.JSONFormatter{})
 	_, filename, _, _ := runtime.Caller(0)
@@ -75,6 +85,24 @@ func Init() (*Config, error) {
 		return nil, err
 	}
 
+	logger.WithField("env", env).Info("enviroment info")
+	for _, e := range env {
+		switch e {
+		case Dev:
+		case Ec2:
+		case Local:
+		default:
+			logger.Errorf("unsupported config env type")
+			return nil, errors.New("unsupported config env type")
+		}
+		logger.Infof("merge config: %v", e)
+		viper.SetConfigName(string(e))
+		err := viper.MergeInConfig()
+		if err != nil {
+			return nil, err
+		}
+	}
+
 	err = viper.Unmarshal(config)
 	if err != nil {
 		return nil, err
@@ -83,4 +111,21 @@ func Init() (*Config, error) {
 	logger.WithField("config", config).Info("config info")
 
 	return config, nil
+}
+
+func GetEnvironment() Env {
+	if os.Getenv(ConfigEnv) == "" {
+		os.Setenv(ConfigEnv, "local")
+	}
+
+	switch os.Getenv(ConfigEnv) {
+	case "dev":
+		return Dev
+	case "ec2":
+		return Ec2
+	case "local":
+		return Local
+	default:
+		panic("invalid env")
+	}
 }

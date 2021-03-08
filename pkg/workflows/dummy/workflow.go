@@ -11,8 +11,8 @@ import (
 	"runtime"
 	"time"
 
-	"github.com/ContextLogic/autobots/clients"
-	"github.com/ContextLogic/autobots/workflows/dummy/models"
+	"github.com/ContextLogic/pkg/autobots/clients"
+	"github.com/ContextLogic/pkg/autobots/workflows/dummy/models"
 	"go.temporal.io/sdk/activity"
 	"go.temporal.io/sdk/temporal"
 	"go.temporal.io/sdk/workflow"

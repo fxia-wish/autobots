@@ -1,17 +1,17 @@
 package main
 
 import (
-	"github.com/ContextLogic/autobots/clients"
-	"github.com/ContextLogic/autobots/config"
-	"github.com/ContextLogic/autobots/handlers"
-	"github.com/ContextLogic/autobots/workflows"
 	c "github.com/ContextLogic/go-base-service/pkg/config"
 	s "github.com/ContextLogic/go-base-service/pkg/service"
+	"github.com/ContextLogic/pkg/autobots/clients"
+	"github.com/ContextLogic/pkg/autobots/config"
+	"github.com/ContextLogic/pkg/autobots/handlers"
+	"github.com/ContextLogic/pkg/autobots/workflows"
 	"go.temporal.io/sdk/worker"
 )
 
 func main() {
-	config, err := config.Init()
+	config, err := config.Init(config.GetEnvironment())
 	if err != nil {
 		panic(err)
 	}

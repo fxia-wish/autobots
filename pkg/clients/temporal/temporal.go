@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/ContextLogic/autobots/config"
+	"github.com/ContextLogic/pkg/autobots/config"
 	"go.temporal.io/api/workflowservice/v1"
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/worker"
