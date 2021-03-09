@@ -12,6 +12,7 @@ import (
 	"time"
 
 	"github.com/ContextLogic/autobots/pkg/clients"
+	"github.com/ContextLogic/autobots/pkg/config"
 	"github.com/ContextLogic/autobots/pkg/workflows/dummy/models"
 	"go.temporal.io/sdk/activity"
 	"go.temporal.io/sdk/temporal"
@@ -20,6 +21,7 @@ import (
 
 type (
 	DummyWorkflow struct {
+		Config     *config.TemporalClientConfig
 		Clients    *clients.Clients
 		Activities *DummyActivities
 	}
@@ -29,9 +31,10 @@ type (
 	}
 )
 
-func NewDummyWorkflow(clients *clients.Clients) *DummyWorkflow {
+func NewDummyWorkflow(config *config.TemporalClientConfig, clients *clients.Clients) *DummyWorkflow {
 	_, filename, _, _ := runtime.Caller(0)
 	return &DummyWorkflow{
+		Config:  config,
 		Clients: clients,
 		Activities: &DummyActivities{
 			Clients: clients,
@@ -184,15 +187,17 @@ func (w *DummyWorkflow) DummyWorkflow(ctx workflow.Context, input interface{}) (
 	}
 
 	response := models.OrderResponse{}
+	c := w.Config.Activities
 	ctx = workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
-		StartToCloseTimeout: time.Minute,
+		StartToCloseTimeout: time.Minute * time.Duration(c.StartToCloseTimeout),
 		RetryPolicy: &temporal.RetryPolicy{
-			InitialInterval:    time.Second,
-			BackoffCoefficient: 1.0,
-			MaximumInterval:    time.Second * 2,
-			MaximumAttempts:    10,
+			InitialInterval:    time.Second * time.Duration(c.RetryPolicy.InitialInterval),
+			BackoffCoefficient: c.RetryPolicy.BackoffCoefficient,
+			MaximumInterval:    time.Second * time.Duration(c.RetryPolicy.MaximumInterval),
+			MaximumAttempts:    c.RetryPolicy.MaximumAttempts,
 		},
 	})
+
 	err = workflow.ExecuteActivity(ctx, w.Activities.DummyCreateOrder, order).Get(ctx, &response)
 	if err != nil {
 		return nil, err

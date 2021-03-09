@@ -15,13 +15,27 @@ clients:
     hostport: temporal-fe-dev.service.consul:7233
     clients:
       dummy:
+        activities:
+          starttoclosetimeout: 1 # minutes
+          retrypolicy:
+            initialinterval: 1 # seconds
+            backoffcoefficient: 1.0
+            maximuminterval: 1 # seconds
+            maximumattempts: 10
         retention: 1 # days
         worker:
           maxconcurrentactivitytaskpollers: 1
       wish_cash_payment:
+        activities:
+          starttoclosetimeout: 10 # minutes
+          retrypolicy:
+            initialinterval: 1 # seconds
+            backoffcoefficient: 1.0
+            maximuminterval: 1 # seconds
+            maximumattempts: 10
         retention: 1 # days
         worker:
           maxconcurrentactivitytaskpollers: 1
   wishfrontend:
     host: lshu.corp.contextlogic.com
-    timeout: 30
+    timeout: 30 # seconds

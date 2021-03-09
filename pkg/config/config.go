@@ -53,8 +53,21 @@ type (
 	}
 
 	TemporalClientConfig struct {
-		Retention int
-		Worker    *WorkerConfig
+		Activities *ActivitiesConfig
+		Retention  int
+		Worker     *WorkerConfig
+	}
+
+	ActivitiesConfig struct {
+		StartToCloseTimeout int
+		RetryPolicy         *RetryPolicyConfig
+	}
+
+	RetryPolicyConfig struct {
+		InitialInterval    int
+		BackoffCoefficient float64
+		MaximumInterval    int
+		MaximumAttempts    int32
 	}
 
 	WorkerConfig struct {

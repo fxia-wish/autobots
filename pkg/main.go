@@ -36,7 +36,7 @@ func main() {
 		panic(err)
 	}
 
-	workflows := workflows.New(clients)
+	workflows := workflows.New(config, clients)
 	err = workflows.Register()
 	if err != nil {
 		panic(err)

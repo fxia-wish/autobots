@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/ContextLogic/autobots/pkg/clients"
+	"github.com/ContextLogic/autobots/pkg/config"
 	"github.com/ContextLogic/autobots/pkg/workflows/wish_cash_payment/models"
 	"github.com/sirupsen/logrus"
 	"go.temporal.io/sdk/temporal"
@@ -18,6 +19,7 @@ import (
 
 type (
 	WishCashPaymentWorkflow struct {
+		Config     *config.TemporalClientConfig
 		Clients    *clients.Clients
 		Activities *WishCashPaymentActivities
 	}
@@ -26,8 +28,9 @@ type (
 	}
 )
 
-func NewWishCashPaymentWorkflow(clients *clients.Clients) *WishCashPaymentWorkflow {
+func NewWishCashPaymentWorkflow(config *config.TemporalClientConfig, clients *clients.Clients) *WishCashPaymentWorkflow {
 	return &WishCashPaymentWorkflow{
+		Config:  config,
 		Clients: clients,
 		Activities: &WishCashPaymentActivities{
 			Clients: clients,
@@ -126,18 +129,20 @@ func (w *WishCashPaymentWorkflow) Register() error {
 }
 
 func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, h http.Header, data []byte) (interface{}, error) {
+	c := w.Config.Activities
 	ctx = workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
-		StartToCloseTimeout: time.Minute,
+		StartToCloseTimeout: time.Minute * time.Duration(c.StartToCloseTimeout),
 		RetryPolicy: &temporal.RetryPolicy{
-			InitialInterval:    time.Second,
-			BackoffCoefficient: 1.0,
-			MaximumInterval:    time.Second,
-			MaximumAttempts:    10,
+			InitialInterval:    time.Second * time.Duration(c.RetryPolicy.InitialInterval),
+			BackoffCoefficient: c.RetryPolicy.BackoffCoefficient,
+			MaximumInterval:    time.Second * time.Duration(c.RetryPolicy.MaximumInterval),
+			MaximumAttempts:    c.RetryPolicy.MaximumAttempts,
 		},
 	})
+
 	createOrderResponse := &models.WishCashPaymentCreateOrderResponse{}
 	if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentCreateOrder, h, data).Get(ctx, createOrderResponse); err != nil {
-		return nil, err
+		return nil, nil
 	}
 
 	if createOrderResponse.Data.FraudActionTaken != "" {
