@@ -58,16 +58,14 @@ func New(config *config.TemporalConfig) (t *Temporal, err error) {
 	return t, nil
 }
 
-func (t *Temporal) RegisterNamespace(config *config.TemporalConfig) error {
-	for k, v := range config.Clients {
-		retention := time.Duration(v.Retention) * time.Hour * 24
-		err := t.NamespaceClient.Register(context.Background(), &workflowservice.RegisterNamespaceRequest{
-			Namespace:                        k,
-			WorkflowExecutionRetentionPeriod: &retention,
-		})
-		if err != nil && err.Error() != "Namespace already exists." {
-			return err
-		}
+func (t *Temporal) RegisterNamespace(namespace string, retention int) error {
+	r := time.Duration(retention) * time.Hour * 24
+	err := t.NamespaceClient.Register(context.Background(), &workflowservice.RegisterNamespaceRequest{
+		Namespace:                        namespace,
+		WorkflowExecutionRetentionPeriod: &r,
+	})
+	if err != nil && err.Error() != "Namespace already exists." {
+		return err
 	}
 	return nil
 }

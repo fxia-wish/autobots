@@ -118,6 +118,10 @@ func (a *WishCashPaymentActivities) WishCashPaymentDeclinePayment(ctx context.Co
 }
 
 func (w *WishCashPaymentWorkflow) Register() error {
+	if err := w.Clients.Temporal.RegisterNamespace(GetNamespace(), w.Config.Retention); err != nil {
+		return err
+	}
+
 	worker := w.Clients.Temporal.DefaultClients[GetNamespace()].Worker
 	worker.RegisterWorkflow(w.WishCashPaymentWorkflow)
 	worker.RegisterActivity(w.Activities.WishCashPaymentCreateOrder)

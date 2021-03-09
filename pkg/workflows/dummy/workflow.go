@@ -166,6 +166,10 @@ func (a *DummyActivities) DummyRefundOrder(ctx context.Context, order models.Ord
 }
 
 func (w *DummyWorkflow) Register() error {
+	if err := w.Clients.Temporal.RegisterNamespace(GetNamespace(), w.Config.Retention); err != nil {
+		return err
+	}
+
 	worker := w.Clients.Temporal.DefaultClients[GetNamespace()].Worker
 	worker.RegisterWorkflow(w.DummyWorkflow)
 	worker.RegisterActivity(w.Activities.DummyCreateOrder)
