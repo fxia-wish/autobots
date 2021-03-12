@@ -1,3 +1,3 @@
 clients:
   wishfrontend:
-    host: wish-frontend-staging.service.consul
+    host: wish-frontend-staging.service.consul:10001
