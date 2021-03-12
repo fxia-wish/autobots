@@ -1,0 +1,3 @@
+clients:
+  wishfrontend:
+    host: wish-frontend-staging.service.consul
