@@ -12,7 +12,7 @@ clients:
     level: info
   temporal:
     taskqueueprefix: TASK_QUEUE
-    hostport: temporal-fe-dev.service.consul:7233
+    hostport: temporal-fe.service.consul:7233
     clients:
       dummy:
         activities:
@@ -37,5 +37,5 @@ clients:
         worker:
           maxconcurrentactivitytaskpollers: 1
   wishfrontend:
-    host: lshu.corp.contextlogic.com
+    host: wish-frontend.service.consul:10001
     timeout: 30 # seconds

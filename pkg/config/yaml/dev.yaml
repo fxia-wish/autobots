@@ -1,3 +1,5 @@
 clients:
+  temporal:
+    hostport: temporal-fe-dev.service.consul:7233
   wishfrontend:
     host: wish-frontend-staging.service.consul:10001

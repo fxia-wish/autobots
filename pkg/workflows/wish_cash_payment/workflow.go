@@ -146,7 +146,7 @@ func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, 
 
 	createOrderResponse := &models.WishCashPaymentCreateOrderResponse{}
 	if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentCreateOrder, h, data).Get(ctx, createOrderResponse); err != nil {
-		return nil, nil
+		return nil, err
 	}
 
 	if createOrderResponse.Data.FraudActionTaken != "" {
