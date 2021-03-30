@@ -1,10 +1,10 @@
 package workflows
 
 import (
-	"github.com/ContextLogic/autobots/clients"
-	"github.com/ContextLogic/autobots/config"
-	dummy "github.com/ContextLogic/autobots/workflows/dummy"
-	"github.com/ContextLogic/autobots/workflows/wish_cash_payment"
+	"github.com/ContextLogic/autobots/pkg/clients"
+	"github.com/ContextLogic/autobots/pkg/config"
+	dummy "github.com/ContextLogic/autobots/pkg/workflows/dummy"
+	"github.com/ContextLogic/autobots/pkg/workflows/wish_cash_payment"
 )
 
 type (
