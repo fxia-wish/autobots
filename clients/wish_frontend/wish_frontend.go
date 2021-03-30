@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/ContextLogic/autobots/pkg/config"
+	"github.com/ContextLogic/autobots/config"
 )
 
 type WishFrontend struct {
