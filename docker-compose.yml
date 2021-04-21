@@ -7,7 +7,7 @@ services:
       context: .
       dockerfile: Dockerfile.local
       args:
-        - GITLAB_ACCESS_TOKEN
+        - GITLAB_ACCESS_TOKEN=xwN1zHMzss6-TtBbNEy4
         - ITA_PROJECT_NAME=autobots
     environment:
       - CONFIG_ENVIRONMENT=ec2

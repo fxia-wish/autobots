@@ -1,5 +1,5 @@
 clients:
   temporal:
-    hostport: 10.32.36.152:7233
+    hostport: 10.32.7.161:7233
   wishfrontend:
     host: nginx
