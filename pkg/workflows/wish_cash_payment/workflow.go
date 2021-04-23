@@ -4,7 +4,6 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
-	"net/http"
 	"path"
 	"reflect"
 	"time"
@@ -38,11 +37,16 @@ func NewWishCashPaymentWorkflow(config *config.TemporalClientConfig, clients *cl
 	}
 }
 
-func (a *WishCashPaymentActivities) WishCashPaymentCreateOrder(ctx context.Context, h http.Header, data []byte) (*models.WishCashPaymentCreateOrderResponse, error) {
+func (a *WishCashPaymentActivities) WishCashPaymentCreateOrder(ctx context.Context, input map[string]interface{}) (interface{}, error) {
+	objInput := &models.WishCashPaymentWorkflowInput{}
+	err := GetInputObject(input["default"], objInput)
+	if err != nil {
+		return nil, err
+	}
 	a.Clients.Logger.Info("==========calling wish-fe to create order: started==========")
-	a.Clients.Logger.WithFields(logrus.Fields{"headers": h, "body": string(data)}).Info("create order request info")
+	a.Clients.Logger.WithFields(logrus.Fields{"headers": objInput.Header, "body": string(objInput.Body)}).Info("create order request info")
 
-	bytes, err := a.Clients.WishFrontend.Post(h, data, "api/temporal-payment/create-order")
+	bytes, err := a.Clients.WishFrontend.Post(objInput.Header, objInput.Body, "api/temporal-payment/create-order")
 	if err != nil {
 		return nil, err
 	}
@@ -51,6 +55,8 @@ func (a *WishCashPaymentActivities) WishCashPaymentCreateOrder(ctx context.Conte
 	if err = json.Unmarshal(bytes, response); err != nil {
 		return nil, err
 	}
+	response.Header = objInput.Header
+	response.Body = []byte(fmt.Sprintf("%s&transaction_id=%s", string(objInput.Body), response.Data.TransactionID))
 
 	a.Clients.Logger.Info("==========calling wish-fe to create order: finished==========")
 	a.Clients.Logger.WithFields(logrus.Fields{"response": response}).Info("create order response info")
@@ -58,11 +64,17 @@ func (a *WishCashPaymentActivities) WishCashPaymentCreateOrder(ctx context.Conte
 	return response, nil
 }
 
-func (a *WishCashPaymentActivities) WishCashPaymentClearCart(ctx context.Context, h http.Header, data []byte) (*models.WishCashPaymentClearCartResponse, error) {
-	a.Clients.Logger.Info("==========calling wish-fe to clear cart: started==========")
-	a.Clients.Logger.WithFields(logrus.Fields{"headers": h, "body": string(data)}).Info("clear cart request info")
+func (a *WishCashPaymentActivities) WishCashPaymentClearCart(ctx context.Context, input map[string]interface{}) (interface{}, error) {
+	objInput := &models.WishCashPaymentCreateOrderResponse{}
+	err := GetInputObject(input, objInput)
+	if err != nil {
+		return nil, err
+	}
 
-	bytes, err := a.Clients.WishFrontend.Post(h, data, "api/temporal-payment/clear-cart")
+	a.Clients.Logger.Info("==========calling wish-fe to clear cart: started==========")
+	a.Clients.Logger.WithFields(logrus.Fields{"headers": objInput.Header, "body": string(objInput.Body)}).Info("clear cart request info")
+
+	bytes, err := a.Clients.WishFrontend.Post(objInput.Header, objInput.Body, "api/temporal-payment/clear-cart")
 	if err != nil {
 		return nil, err
 	}
@@ -72,17 +84,25 @@ func (a *WishCashPaymentActivities) WishCashPaymentClearCart(ctx context.Context
 		return nil, err
 	}
 
+	response.Header = objInput.Header
+	response.Body = objInput.Body
 	a.Clients.Logger.Info("==========calling wish-fe to clear cart: finished==========")
 	a.Clients.Logger.WithFields(logrus.Fields{"response": response}).Info("clear cart response info")
 
 	return response, nil
 }
 
-func (a *WishCashPaymentActivities) WishCashPaymentApprovePayment(ctx context.Context, h http.Header, data []byte) (*models.WishCashPaymentApprovePaymentResponse, error) {
-	a.Clients.Logger.Info("==========calling wish-fe to approve payment: started==========")
-	a.Clients.Logger.WithFields(logrus.Fields{"headers": h, "body": string(data)}).Info("approve payment request info")
+func (a *WishCashPaymentActivities) WishCashPaymentApprovePayment(ctx context.Context, input map[string]interface{}) (interface{}, error) {
+	objInput := &models.WishCashPaymentClearCartResponse{}
+	err := GetInputObject(input, objInput)
+	if err != nil {
+		return nil, err
+	}
 
-	bytes, err := a.Clients.WishFrontend.Post(h, data, "api/temporal-payment/approve-payment")
+	a.Clients.Logger.Info("==========calling wish-fe to approve payment: started==========")
+	a.Clients.Logger.WithFields(logrus.Fields{"headers": objInput.Header, "body": string(objInput.Body)}).Info("approve payment request info")
+
+	bytes, err := a.Clients.WishFrontend.Post(objInput.Header, objInput.Body, "api/temporal-payment/approve-payment")
 	if err != nil {
 		return nil, err
 	}
@@ -92,17 +112,25 @@ func (a *WishCashPaymentActivities) WishCashPaymentApprovePayment(ctx context.Co
 		return nil, err
 	}
 
+	response.Header = objInput.Header
+	response.Body = objInput.Body
 	a.Clients.Logger.Info("==========calling wish-fe to approve payment: finished==========")
 	a.Clients.Logger.WithFields(logrus.Fields{"response": response}).Info("approve payment response info")
 
 	return response, nil
 }
 
-func (a *WishCashPaymentActivities) WishCashPaymentDeclinePayment(ctx context.Context, h http.Header, data []byte) (*models.WishCashPaymentDeclinePaymentResponse, error) {
-	a.Clients.Logger.Info("==========calling wish-fe to decline payment: started==========")
-	a.Clients.Logger.WithFields(logrus.Fields{"headers": h, "body": string(data)}).Info("decline payment request info")
+func (a *WishCashPaymentActivities) WishCashPaymentDeclinePayment(ctx context.Context, input map[string]interface{}) (interface{}, error) {
+	objInput := &models.WishCashPaymentCreateOrderResponse{}
+	err := GetInputObject(input, objInput)
+	if err != nil {
+		return nil, err
+	}
 
-	bytes, err := a.Clients.WishFrontend.Post(h, data, "api/temporal-payment/decline-payment")
+	a.Clients.Logger.Info("==========calling wish-fe to decline payment: started==========")
+	a.Clients.Logger.WithFields(logrus.Fields{"headers": objInput.Header, "body": string(objInput.Body)}).Info("decline payment request info")
+
+	bytes, err := a.Clients.WishFrontend.Post(objInput.Header, objInput.Body, "api/temporal-payment/decline-payment")
 	if err != nil {
 		return nil, err
 	}
@@ -111,6 +139,8 @@ func (a *WishCashPaymentActivities) WishCashPaymentDeclinePayment(ctx context.Co
 	if err = json.Unmarshal(bytes, response); err != nil {
 		return nil, err
 	}
+	response.Header = objInput.Header
+	response.Body = objInput.Body
 	a.Clients.Logger.Info("==========calling wish-fe to decline payment: finished==========")
 	a.Clients.Logger.WithFields(logrus.Fields{"response": response}).Info("decline payment response info")
 
@@ -132,7 +162,7 @@ func (w *WishCashPaymentWorkflow) Register() error {
 	return nil
 }
 
-func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, h http.Header, data []byte) (interface{}, error) {
+func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, input map[string]interface{}) (interface{}, error) {
 	c := w.Config.Activities
 	ctx = workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
 		StartToCloseTimeout: time.Minute * time.Duration(c.StartToCloseTimeout),
@@ -145,14 +175,19 @@ func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, 
 	})
 
 	createOrderResponse := &models.WishCashPaymentCreateOrderResponse{}
-	if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentCreateOrder, h, data).Get(ctx, createOrderResponse); err != nil {
+	if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentCreateOrder, input).Get(ctx, createOrderResponse); err != nil {
+		return nil, err
+	}
+	defaultInput := &models.WishCashPaymentWorkflowInput{}
+	err := GetInputObject(input["default"], defaultInput)
+	if err != nil {
 		return nil, err
 	}
 
 	if createOrderResponse.Data.FraudActionTaken != "" {
 		declinePaymentResponse := &models.WishCashPaymentDeclinePaymentResponse{}
-		body := fmt.Sprintf("%s&fraud_action_taken=%s&transaction_id=%s", string(data), createOrderResponse.Data.FraudActionTaken, createOrderResponse.Data.TransactionID)
-		if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentDeclinePayment, h, []byte(body)).Get(ctx, declinePaymentResponse); err != nil {
+		defaultInput.Body = []byte(fmt.Sprintf("%s&fraud_action_taken=%s&transaction_id=%s", string(defaultInput.Body), createOrderResponse.Data.FraudActionTaken, createOrderResponse.Data.TransactionID))
+		if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentDeclinePayment, defaultInput).Get(ctx, declinePaymentResponse); err != nil {
 			return nil, err
 		}
 		return &models.WishCashPaymentResponse{
@@ -173,14 +208,14 @@ func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, 
 	}
 
 	clearCartResponse := &models.WishCashPaymentClearCartResponse{}
-	body := fmt.Sprintf("%s&transaction_id=%s", string(data), createOrderResponse.Data.TransactionID)
-	if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentClearCart, h, []byte(body)).Get(ctx, clearCartResponse); err != nil {
+	defaultInput.Body = []byte(fmt.Sprintf("%s&transaction_id=%s", string(defaultInput.Body), createOrderResponse.Data.TransactionID))
+	if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentClearCart, defaultInput).Get(ctx, clearCartResponse); err != nil {
 		return nil, err
 	}
 
 	approvePaymentResponse := &models.WishCashPaymentApprovePaymentResponse{}
-	body = fmt.Sprintf("%s&transaction_id=%s", string(data), clearCartResponse.Data.TransactionID)
-	if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentApprovePayment, h, []byte(body)).Get(ctx, approvePaymentResponse); err != nil {
+	defaultInput.Body = []byte(fmt.Sprintf("%s&transaction_id=%s", string(defaultInput.Body), clearCartResponse.Data.TransactionID))
+	if err := workflow.ExecuteActivity(ctx, w.Activities.WishCashPaymentApprovePayment, defaultInput).Get(ctx, approvePaymentResponse); err != nil {
 		return nil, err
 	}
 
@@ -197,4 +232,23 @@ func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, 
 
 func GetNamespace() string {
 	return path.Base(reflect.TypeOf(WishCashPaymentWorkflow{}).PkgPath())
+}
+
+func GetActivityMap(w *WishCashPaymentWorkflow) map[string]func(ctx context.Context, input map[string]interface{}) (interface{}, error) {
+	activityMap := map[string]func(ctx context.Context, input map[string]interface{}) (interface{}, error){
+		"WishCashPaymentCreateOrder":    w.Activities.WishCashPaymentCreateOrder,
+		"WishCashPaymentClearCart":      w.Activities.WishCashPaymentClearCart,
+		"WishCashPaymentApprovePayment": w.Activities.WishCashPaymentApprovePayment,
+		"WishCashPaymentDeclinePayment": w.Activities.WishCashPaymentDeclinePayment,
+	}
+	return activityMap
+}
+
+func GetInputObject(input interface{}, objInput interface{}) error {
+	data, _ := json.Marshal(input)
+	err := json.Unmarshal(data, &objInput)
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -16,6 +16,7 @@ import (
 	"github.com/ContextLogic/autobots/pkg/workflows/dummy"
 	dummy_models "github.com/ContextLogic/autobots/pkg/workflows/dummy/models"
 	"github.com/ContextLogic/autobots/pkg/workflows/wish_cash_payment"
+	"github.com/ContextLogic/autobots/pkg/workflows/wish_cash_payment/models"
 	wish_cash_payment_models "github.com/ContextLogic/autobots/pkg/workflows/wish_cash_payment/models"
 	s "github.com/ContextLogic/go-base-service/pkg/service"
 	"github.com/pborman/uuid"
@@ -292,6 +293,13 @@ func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.
 	return func(w http.ResponseWriter, req *http.Request) {
 		body, _ := ioutil.ReadAll(req.Body)
 		defer req.Body.Close()
+
+		data := &models.WishCashPaymentWorkflowInput{
+			Header: req.Header,
+			Body:   []byte(body),
+		}
+
+		h.Clients.Logger.Info("workflow execution triggered")
 		we, err := h.Clients.Temporal.DefaultClients[wish_cash_payment.GetNamespace()].Client.ExecuteWorkflow(
 			context.Background(),
 			client.StartWorkflowOptions{
@@ -299,8 +307,9 @@ func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.
 				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, wish_cash_payment.GetNamespace()),
 			},
 			h.Workflows[wish_cash_payment.GetNamespace()].(*wish_cash_payment.WishCashPaymentWorkflow).WishCashPaymentWorkflow,
-			req.Header,
-			body,
+			map[string]interface{}{
+				"default": data,
+			},
 		)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
@@ -315,10 +324,6 @@ func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.
 		}
 		response.WorkflowID = we.GetID()
 		response.RunID = we.GetRunID()
-
-		h.Clients.Logger.WithFields(logrus.Fields{
-			"api response": response,
-		}).Info("workflow execution completed")
 
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
