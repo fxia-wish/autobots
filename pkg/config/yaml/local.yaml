@@ -1,5 +1,5 @@
 clients:
   temporal:
-    hostport: temporal-fe-dev.service.consul:7233
+    hostport: localhost:7233
   wishfrontend:
-    host: lshu.corp.contextlogic.com
+    host: bgao-mac.corp.contextlogic.com

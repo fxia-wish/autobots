@@ -294,7 +294,7 @@ func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.
 		body, _ := ioutil.ReadAll(req.Body)
 		defer req.Body.Close()
 
-		data := &models.WishCashPaymentWorkflowInput{
+		data := &models.WishCashPaymentWorkflowContext{
 			Header: req.Header,
 			Body:   []byte(body),
 		}
@@ -307,9 +307,7 @@ func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.
 				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, wish_cash_payment.GetNamespace()),
 			},
 			h.Workflows[wish_cash_payment.GetNamespace()].(*wish_cash_payment.WishCashPaymentWorkflow).WishCashPaymentWorkflow,
-			map[string]interface{}{
-				"default": data,
-			},
+			data,
 		)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
@@ -325,6 +323,9 @@ func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.
 		response.WorkflowID = we.GetID()
 		response.RunID = we.GetRunID()
 
+		h.Clients.Logger.WithFields(logrus.Fields{
+			"api response": response,
+		}).Info("workflow execution completed")
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		json.NewEncoder(w).Encode(response)

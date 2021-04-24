@@ -76,7 +76,7 @@ func (s *UnitTestSuite) Test_Integration_Workflow() {
 		config.Clients.Temporal.TaskQueuePrefix + "_dsl": worker.Options{},
 	}
 
-	err = c.Register(wp, workerOptions, activities)
+	_, err = c.Register(wp, workerOptions, activities)
 	if err != nil {
 		panic(err)
 	}
@@ -88,11 +88,9 @@ func (s *UnitTestSuite) Test_Integration_Workflow() {
 	body := "_xsrf=1"
 	bytes := []byte(body)
 
-	data := map[string]*models.WishCashPaymentWorkflowInput{
-		"default": {
-			Header: h,
-			Body:   bytes,
-		},
+	data := &models.WishCashPaymentWorkflowContext{
+		Header: h,
+		Body:   bytes,
 	}
 	s.NoError(AddCart(cashPaymentWorkflow, h))
 

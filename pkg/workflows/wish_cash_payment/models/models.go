@@ -8,8 +8,7 @@ type (
 		FraudActionTaken string `json:"fraud_action_taken"`
 	}
 	WishCashPaymentCreateOrderResponse struct {
-		Header      http.Header                            `json:"header"`
-		Body        []byte                                 `json:"body"`
+		Context     WishCashPaymentWorkflowContext         `json:"wishCashPaymentWorkflowContext"`
 		Msg         string                                 `json:"msg"`
 		Code        int                                    `json:"code"`
 		Data        WishCashPaymentCreateOrderResponseData `json:"data"`
@@ -20,8 +19,7 @@ type (
 		TransactionID string `json:"transaction_id"`
 	}
 	WishCashPaymentClearCartResponse struct {
-		Header      http.Header                          `json:"header"`
-		Body        []byte                               `json:"body"`
+		Context     WishCashPaymentWorkflowContext       `json:"wishCashPaymentWorkflowContext"`
 		Msg         string                               `json:"msg"`
 		Code        int                                  `json:"code"`
 		Data        WishCashPaymentClearCartResponseData `json:"data"`
@@ -32,8 +30,7 @@ type (
 		TransactionID string `json:"transaction_id"`
 	}
 	WishCashPaymentApprovePaymentResponse struct {
-		Header      http.Header                               `json:"header"`
-		Body        []byte                                    `json:"body"`
+		Context     WishCashPaymentWorkflowContext            `json:"wishCashPaymentWorkflowContext"`
 		Msg         string                                    `json:"msg"`
 		Code        int                                       `json:"code"`
 		Data        WishCashPaymentApprovePaymentResponseData `json:"data"`
@@ -44,8 +41,7 @@ type (
 		TransactionID string `json:"transaction_id"`
 	}
 	WishCashPaymentDeclinePaymentResponse struct {
-		Header      http.Header                               `json:"header"`
-		Body        []byte                                    `json:"body"`
+		Context     WishCashPaymentWorkflowContext            `json:"wishCashPaymentWorkflowContext"`
 		Msg         string                                    `json:"msg"`
 		Code        int                                       `json:"code"`
 		Data        WishCashPaymentDeclinePaymentResponseData `json:"data"`
@@ -58,14 +54,13 @@ type (
 		TransactionID string `json:"transaction_id"`
 	}
 	WishCashPaymentResponse struct {
-		Header     http.Header                 `json:"header"`
-		Body       []byte                      `json:"body"`
-		Data       WishCashPaymentResponseData `json:"data"`
-		WorkflowID string                      `json:"workflow_id"`
-		RunID      string                      `json:"run_id"`
+		Context    WishCashPaymentWorkflowContext `json:"wishCashPaymentWorkflowContext"`
+		Data       WishCashPaymentResponseData    `json:"data"`
+		WorkflowID string                         `json:"workflow_id"`
+		RunID      string                         `json:"run_id"`
 	}
 
-	WishCashPaymentWorkflowInput struct {
+	WishCashPaymentWorkflowContext struct {
 		Header http.Header `json:"header"`
 		Body   []byte      `json:"body"`
 	}
