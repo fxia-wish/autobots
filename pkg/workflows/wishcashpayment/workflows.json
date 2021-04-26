@@ -1,0 +1,66 @@
+[
+    {
+        "Name": "WishCashPaymentWorkflow",
+        "Queue": "TASK_QUEUE_dsl",
+        "StartAt": "CreateOrder",
+        "States": {
+            "CreateOrder": {
+                "Type": "Task",
+                "Resource": "WishCashPaymentCreateOrder",
+                "Next": "AfterOrderChoice"
+            },
+            "AfterOrderChoice": {
+                "Type" : "Choice",
+                "Choices": [
+                    {
+                        "Not": {
+                            "Variable": "$.data.fraud_action_taken",
+                            "StringEquals": ""
+                        },
+                        "Next": "DeclinePaymentWithFraudAction"
+                    },
+                    {
+                        "AND": [
+                            {
+                                "Variable": "$.data.fraud_action_taken",
+                                "StringEquals": ""
+                            },
+                            {   
+                                "Variable": "$.data.transaction_id",
+                                "StringEquals": ""
+                            }
+                        ],
+                        "Next": "ReturnPaymentResponseData"
+                    }
+                ],
+                "Default": "WishCashPaymentClearCart"
+            },
+            "ReturnPaymentResponseData": {
+                "Type": "Pass",
+                "Next": "SuccessState"
+            },
+            "DeclinePaymentWithFraudAction": {
+                "Type": "Task",
+                "Resource": "WishCashPaymentDeclinePayment",
+                "Next": "SuccessState"
+            },
+            "WishCashPaymentClearCart": {
+                "Type": "Task",
+                "Resource": "WishCashPaymentClearCart",
+                "Next": "WishCashPaymentApprovePayment"
+            },  
+            "WishCashPaymentApprovePayment": {
+                "Type": "Task",
+                "Resource": "WishCashPaymentApprovePayment",
+                "Next": "SuccessState"
+            },  
+            "SuccessState": {
+                "Type": "Succeed"
+            },
+            "FailState": {
+                "Type": "Fail",
+                "Cause": "Error!"
+            }
+        }
+    }
+]

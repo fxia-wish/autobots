@@ -41,14 +41,14 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
-	for k, _ := range workflows {
+	for k := range workflows {
 		go clients.Temporal.DefaultClients[k].Worker.Run(worker.InterruptCh())
 	}
 	handlers.New(config, clients, s, workflows)
 	if err = s.Start(); err != nil {
 		panic(err)
 	}
-	for k, _ := range workflows {
+	for k := range workflows {
 		defer clients.Temporal.DefaultClients[k].Client.Close()
 	}
 }

@@ -13,10 +13,10 @@ import (
 	"github.com/ContextLogic/autobots/pkg/clients"
 	"github.com/ContextLogic/autobots/pkg/config"
 	"github.com/ContextLogic/autobots/pkg/workflows"
-	"github.com/ContextLogic/autobots/pkg/workflows/dummy"
+	dummies "github.com/ContextLogic/autobots/pkg/workflows/dummy"
 	dummy_models "github.com/ContextLogic/autobots/pkg/workflows/dummy/models"
-	"github.com/ContextLogic/autobots/pkg/workflows/wish_cash_payment"
-	wish_cash_payment_models "github.com/ContextLogic/autobots/pkg/workflows/wish_cash_payment/models"
+	wishcashpayments "github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment"
+	wishcashpayment_models "github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment/models"
 	s "github.com/ContextLogic/go-base-service/pkg/service"
 	"github.com/pborman/uuid"
 	"github.com/sirupsen/logrus"
@@ -28,6 +28,7 @@ import (
 )
 
 type (
+	// Handlers collection
 	Handlers struct {
 		Config    *config.Config
 		Clients   *clients.Clients
@@ -35,6 +36,7 @@ type (
 	}
 )
 
+// New register service APIs
 func New(config *config.Config, clients *clients.Clients, service *s.Service, workflows workflows.Workflows) *Handlers {
 	h := &Handlers{
 		Config:    config,
@@ -51,6 +53,7 @@ func New(config *config.Config, clients *clients.Clients, service *s.Service, wo
 	return h
 }
 
+// Unmarshal dummy request
 func (h *Handlers) Unmarshal(req *http.Request) (*dummy_models.Order, error) {
 	b, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
@@ -65,6 +68,7 @@ func (h *Handlers) Unmarshal(req *http.Request) (*dummy_models.Order, error) {
 	return &order, nil
 }
 
+// UnmarshalResetRequest unmarshal reset request
 func (h *Handlers) UnmarshalResetRequest(req *http.Request) (*dummy_models.ResetRequest, error) {
 	b, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
@@ -79,6 +83,7 @@ func (h *Handlers) UnmarshalResetRequest(req *http.Request) (*dummy_models.Reset
 	return &r, nil
 }
 
+//UnmarshalShippedNotificationRequest unmarshal ship notification
 func (h *Handlers) UnmarshalShippedNotificationRequest(req *http.Request) (*dummy_models.ShippedNotificationRequest, error) {
 	b, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
@@ -93,12 +98,14 @@ func (h *Handlers) UnmarshalShippedNotificationRequest(req *http.Request) (*dumm
 	return &r, nil
 }
 
+// Health check
 func (h *Handlers) Health() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}
 }
 
+// PlaceOrderSync send place order request in sync
 func (h *Handlers) PlaceOrderSync() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		order, err := h.Unmarshal(req)
@@ -107,13 +114,13 @@ func (h *Handlers) PlaceOrderSync() func(w http.ResponseWriter, req *http.Reques
 			return
 		}
 
-		we, err := h.Clients.Temporal.DefaultClients[dummy.GetNamespace()].Client.ExecuteWorkflow(
+		we, err := h.Clients.Temporal.DefaultClients[dummies.GetNamespace()].Client.ExecuteWorkflow(
 			context.Background(),
 			client.StartWorkflowOptions{
-				ID:        strings.Join([]string{dummy.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
-				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, dummy.GetNamespace()),
+				ID:        strings.Join([]string{dummies.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
+				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, dummies.GetNamespace()),
 			},
-			h.Workflows[dummy.GetNamespace()].(*dummy.DummyWorkflow).DummyWorkflow,
+			h.Workflows[dummies.GetNamespace()].(*dummies.DummyWorkflow).DummyWorkflow,
 			order,
 		)
 		if err != nil {
@@ -144,6 +151,7 @@ func (h *Handlers) PlaceOrderSync() func(w http.ResponseWriter, req *http.Reques
 	}
 }
 
+// PlaceOrderAsync send place order request async
 func (h *Handlers) PlaceOrderAsync() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		order, err := h.Unmarshal(req)
@@ -152,13 +160,13 @@ func (h *Handlers) PlaceOrderAsync() func(w http.ResponseWriter, req *http.Reque
 			return
 		}
 
-		we, err := h.Clients.Temporal.DefaultClients[dummy.GetNamespace()].Client.ExecuteWorkflow(
+		we, err := h.Clients.Temporal.DefaultClients[dummies.GetNamespace()].Client.ExecuteWorkflow(
 			context.Background(),
 			client.StartWorkflowOptions{
-				ID:        strings.Join([]string{dummy.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
-				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, dummy.GetNamespace()),
+				ID:        strings.Join([]string{dummies.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
+				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, dummies.GetNamespace()),
 			},
-			h.Workflows[dummy.GetNamespace()].(*dummy.DummyWorkflow).DummyWorkflow,
+			h.Workflows[dummies.GetNamespace()].(*dummies.DummyWorkflow).DummyWorkflow,
 			order,
 		)
 		if err != nil {
@@ -180,6 +188,7 @@ func (h *Handlers) PlaceOrderAsync() func(w http.ResponseWriter, req *http.Reque
 	}
 }
 
+// Shipped return function that parse shipped notification
 func (h *Handlers) Shipped() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		rr, err := h.UnmarshalShippedNotificationRequest(req)
@@ -191,7 +200,7 @@ func (h *Handlers) Shipped() func(w http.ResponseWriter, req *http.Request) {
 		histories, err := h.Clients.Temporal.WorkflowServiceClient.GetWorkflowExecutionHistory(
 			context.Background(),
 			&ws.GetWorkflowExecutionHistoryRequest{
-				Namespace: dummy.GetNamespace(),
+				Namespace: dummies.GetNamespace(),
 				Execution: &common.WorkflowExecution{
 					WorkflowId: rr.WorkflowID,
 					RunId:      rr.RunID,
@@ -212,9 +221,9 @@ func (h *Handlers) Shipped() func(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 
-		err = h.Clients.Temporal.DefaultClients[dummy.GetNamespace()].Client.CompleteActivityByID(
+		err = h.Clients.Temporal.DefaultClients[dummies.GetNamespace()].Client.CompleteActivityByID(
 			context.Background(),
-			dummy.GetNamespace(),
+			dummies.GetNamespace(),
 			rr.WorkflowID,
 			rr.RunID,
 			rr.ActivityID,
@@ -232,6 +241,7 @@ func (h *Handlers) Shipped() func(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// Reset return function that reset workflow execution
 func (h *Handlers) Reset() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		rr, err := h.UnmarshalResetRequest(req)
@@ -243,7 +253,7 @@ func (h *Handlers) Reset() func(w http.ResponseWriter, req *http.Request) {
 		histories, err := h.Clients.Temporal.WorkflowServiceClient.GetWorkflowExecutionHistory(
 			context.Background(),
 			&ws.GetWorkflowExecutionHistoryRequest{
-				Namespace: dummy.GetNamespace(),
+				Namespace: dummies.GetNamespace(),
 				Execution: &common.WorkflowExecution{
 					WorkflowId: rr.WorkflowID,
 					RunId:      rr.RunID,
@@ -268,7 +278,7 @@ func (h *Handlers) Reset() func(w http.ResponseWriter, req *http.Request) {
 		_, err = h.Clients.Temporal.WorkflowServiceClient.ResetWorkflowExecution(
 			context.Background(),
 			&ws.ResetWorkflowExecutionRequest{
-				Namespace: dummy.GetNamespace(),
+				Namespace: dummies.GetNamespace(),
 				WorkflowExecution: &common.WorkflowExecution{
 					WorkflowId: rr.WorkflowID,
 					RunId:      rr.RunID,
@@ -288,26 +298,33 @@ func (h *Handlers) Reset() func(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+//StartWishCashPayment return function that triggers wish cash payment workflow
 func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		body, _ := ioutil.ReadAll(req.Body)
 		defer req.Body.Close()
-		we, err := h.Clients.Temporal.DefaultClients[wish_cash_payment.GetNamespace()].Client.ExecuteWorkflow(
+
+		data := &wishcashpayment_models.WishCashPaymentWorkflowContext{
+			Header: req.Header,
+			Body:   []byte(body),
+		}
+
+		h.Clients.Logger.Info("workflow execution triggered")
+		we, err := h.Clients.Temporal.DefaultClients[wishcashpayments.GetNamespace()].Client.ExecuteWorkflow(
 			context.Background(),
 			client.StartWorkflowOptions{
-				ID:        strings.Join([]string{wish_cash_payment.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
-				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, wish_cash_payment.GetNamespace()),
+				ID:        strings.Join([]string{wishcashpayments.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
+				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, wishcashpayments.GetNamespace()),
 			},
-			h.Workflows[wish_cash_payment.GetNamespace()].(*wish_cash_payment.WishCashPaymentWorkflow).WishCashPaymentWorkflow,
-			req.Header,
-			body,
+			h.Workflows[wishcashpayments.GetNamespace()].(*wishcashpayments.WishCashPaymentWorkflow).WishCashPaymentWorkflow,
+			data,
 		)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
 			return
 		}
 
-		response := &wish_cash_payment_models.WishCashPaymentResponse{}
+		response := &wishcashpayment_models.WishCashPaymentResponse{}
 		err = we.Get(context.Background(), &response)
 		if err != nil {
 			http.Error(w, err.Error(), 500)
@@ -319,7 +336,6 @@ func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.
 		h.Clients.Logger.WithFields(logrus.Fields{
 			"api response": response,
 		}).Info("workflow execution completed")
-
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(200)
 		json.NewEncoder(w).Encode(response)

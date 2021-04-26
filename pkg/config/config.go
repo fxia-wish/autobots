@@ -12,20 +12,26 @@ import (
 )
 
 const (
-	Dev       Env = "dev"
-	Ec2       Env = "ec2"
-	Local     Env = "local"
-	ConfigEnv     = "CONFIG_ENVIRONMENT"
+	// Dev env
+	Dev Env = "dev"
+	// Ec2 env
+	Ec2 Env = "ec2"
+	// Local env
+	Local Env = "local"
+	// ConfigEnv env
+	ConfigEnv = "CONFIG_ENVIRONMENT"
 )
 
 type (
-	Env    string
+	// Env string
+	Env string
+	// Config collection
 	Config struct {
 		Root    string
 		Service *ServiceConfig
 		Clients *ClientsConfig
 	}
-
+	// ServiceConfig contains service related configuration
 	ServiceConfig struct {
 		ServiceName     string
 		ShutDownTimeOut time.Duration
@@ -39,51 +45,53 @@ type (
 		}
 	}
 
+	// ClientsConfig contains autobot related configuration
 	ClientsConfig struct {
 		Logger       *LoggerConfig
 		Temporal     *TemporalConfig
 		WishFrontend *WishFrontendConfig
 	}
-
+	//TemporalConfig  contains workflow related configuration
 	TemporalConfig struct {
 		TaskQueue       string
 		TaskQueuePrefix string
 		HostPort        string
 		Clients         map[string]*TemporalClientConfig
 	}
-
+	//TemporalClientConfig contains temporal client related configuration
 	TemporalClientConfig struct {
 		Activities *ActivitiesConfig
 		Retention  int
 		Worker     *WorkerConfig
 	}
-
+	//ActivitiesConfig contains activity related configuration
 	ActivitiesConfig struct {
 		StartToCloseTimeout int
 		RetryPolicy         *RetryPolicyConfig
 	}
-
+	//RetryPolicyConfig contains retry related configuration
 	RetryPolicyConfig struct {
 		InitialInterval    int
 		BackoffCoefficient float64
 		MaximumInterval    int
 		MaximumAttempts    int32
 	}
-
+	//WorkerConfig contains worker related configuration
 	WorkerConfig struct {
 		MaxConcurrentActivityTaskPollers int
 	}
-
+	//LoggerConfig contains logging related configuration
 	LoggerConfig struct {
 		Level string
 	}
-
+	//WishFrontendConfig contains wish fe related configuration
 	WishFrontendConfig struct {
 		Host    string
 		Timeout int
 	}
 )
 
+// Init config from file
 func Init(env ...Env) (*Config, error) {
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.JSONFormatter{})
@@ -126,6 +134,7 @@ func Init(env ...Env) (*Config, error) {
 	return config, nil
 }
 
+// GetEnvironment from configured env
 func GetEnvironment() Env {
 	if os.Getenv(ConfigEnv) == "" {
 		os.Setenv(ConfigEnv, "local")
