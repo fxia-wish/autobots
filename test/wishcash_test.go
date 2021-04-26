@@ -18,7 +18,7 @@ import (
 
 	"github.com/ContextLogic/autobots/pkg/clients"
 	"github.com/ContextLogic/autobots/pkg/config"
-	"github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment"
+	wishcashpayments "github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment"
 	"github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment/models"
 
 	cadencepkg "github.com/ContextLogic/cadence/pkg"
@@ -43,7 +43,7 @@ func (s *UnitTestSuite) AfterTest(suiteName, testName string) {
 }
 
 func TestUnitTestSuite(t *testing.T) {
-	t.Skip()
+	//t.Skip()
 	suite.Run(t, new(UnitTestSuite))
 }
 
@@ -58,22 +58,22 @@ func (s *UnitTestSuite) Test_Integration_Workflow() {
 		panic(err)
 	}
 
-	cashPaymentWorkflow := wishcashpayment.NewWishCashPaymentWorkflow(
-		config.Clients.Temporal.Clients[wishcashpayment.GetNamespace()],
+	cashPaymentWorkflow := wishcashpayments.NewWishCashPaymentWorkflow(
+		config.Clients.Temporal.Clients[wishcashpayments.GetNamespace()],
 		clients,
 	)
 
 	_, filename, _, _ := runtime.Caller(0)
 	wp := path.Join(path.Dir(filename), "../pkg/workflows/wishcashpayment/workflows.json")
-	c, err := cadencepkg.New(temporal.Options{HostPort: config.Clients.Temporal.HostPort, Namespace: wishcashpayment.GetNamespace()})
+	c, err := cadencepkg.New(temporal.Options{HostPort: config.Clients.Temporal.HostPort, Namespace: wishcashpayments.GetNamespace()})
 	if err != nil {
 		panic(err)
 	}
 
-	activities := wishcashpayment.GetActivityMap(cashPaymentWorkflow)
+	activities := wishcashpayments.GetActivityMap(cashPaymentWorkflow)
 	workerOptions := map[string]worker.Options{
 		// queue: worker_options
-		config.Clients.Temporal.TaskQueuePrefix + "_dsl": worker.Options{},
+		config.Clients.Temporal.TaskQueuePrefix + "_dsl": {},
 	}
 
 	_, err = c.Register(wp, workerOptions, activities)
@@ -97,7 +97,7 @@ func (s *UnitTestSuite) Test_Integration_Workflow() {
 	instance, err := c.ExecuteWorkflow(
 		context.Background(),
 		temporal.StartWorkflowOptions{
-			ID:        strings.Join([]string{wishcashpayment.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
+			ID:        strings.Join([]string{wishcashpayments.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
 			TaskQueue: config.Clients.Temporal.TaskQueuePrefix + "_dsl",
 		},
 		"WishCashPaymentWorkflow",
@@ -110,7 +110,7 @@ func (s *UnitTestSuite) Test_Integration_Workflow() {
 
 }
 
-func AddCart(wf *wishcashpayment.WishCashPaymentWorkflow, h http.Header) error {
+func AddCart(wf *wishcashpayments.WishCashPaymentWorkflow, h http.Header) error {
 	params := url.Values{}
 	params.Add("_xsrf", `1`)
 	params.Add("product_id", `5c4a04e0e6a1c633c8876229`)
