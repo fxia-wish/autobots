@@ -44,6 +44,7 @@ func (s *UnitTestSuite) AfterTest(suiteName, testName string) {
 }
 
 func TestUnitTestSuite(t *testing.T) {
+	t.Skip()
 	suite.Run(t, new(UnitTestSuite))
 }
 

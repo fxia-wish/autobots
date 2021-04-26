@@ -13,18 +13,20 @@ import (
 )
 
 type (
+	//temporal client
 	Temporal struct {
 		DefaultClients        map[string]DefaultClients
 		WorkflowServiceClient workflowservice.WorkflowServiceClient
 		NamespaceClient       client.NamespaceClient
 	}
-
+	// workflow client and worker client
 	DefaultClients struct {
 		Client client.Client
 		Worker worker.Worker
 	}
 )
 
+// create new temporal client from config
 func New(config *config.TemporalConfig) (t *Temporal, err error) {
 	t = &Temporal{
 		DefaultClients: make(map[string]DefaultClients),
@@ -58,6 +60,7 @@ func New(config *config.TemporalConfig) (t *Temporal, err error) {
 	return t, nil
 }
 
+// register namespace
 func (t *Temporal) RegisterNamespace(namespace string, retention int) error {
 	r := time.Duration(retention) * time.Hour * 24
 	err := t.NamespaceClient.Register(context.Background(), &workflowservice.RegisterNamespaceRequest{

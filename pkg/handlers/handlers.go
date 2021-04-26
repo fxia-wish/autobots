@@ -36,6 +36,7 @@ type (
 	}
 )
 
+// register service APIs
 func New(config *config.Config, clients *clients.Clients, service *s.Service, workflows workflows.Workflows) *Handlers {
 	h := &Handlers{
 		Config:    config,
@@ -52,6 +53,7 @@ func New(config *config.Config, clients *clients.Clients, service *s.Service, wo
 	return h
 }
 
+// unmarshal dummy request
 func (h *Handlers) Unmarshal(req *http.Request) (*dummy_models.Order, error) {
 	b, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
@@ -66,6 +68,7 @@ func (h *Handlers) Unmarshal(req *http.Request) (*dummy_models.Order, error) {
 	return &order, nil
 }
 
+// unmarshal reset request
 func (h *Handlers) UnmarshalResetRequest(req *http.Request) (*dummy_models.ResetRequest, error) {
 	b, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
@@ -94,12 +97,14 @@ func (h *Handlers) UnmarshalShippedNotificationRequest(req *http.Request) (*dumm
 	return &r, nil
 }
 
+// check health
 func (h *Handlers) Health() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusOK)
 	}
 }
 
+// place order sync request
 func (h *Handlers) PlaceOrderSync() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		order, err := h.Unmarshal(req)
@@ -145,6 +150,7 @@ func (h *Handlers) PlaceOrderSync() func(w http.ResponseWriter, req *http.Reques
 	}
 }
 
+// place order async request
 func (h *Handlers) PlaceOrderAsync() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		order, err := h.Unmarshal(req)
@@ -181,6 +187,7 @@ func (h *Handlers) PlaceOrderAsync() func(w http.ResponseWriter, req *http.Reque
 	}
 }
 
+// return function that parse shipped notification
 func (h *Handlers) Shipped() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		rr, err := h.UnmarshalShippedNotificationRequest(req)
@@ -233,6 +240,7 @@ func (h *Handlers) Shipped() func(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+// return function that reset workflow execution
 func (h *Handlers) Reset() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		rr, err := h.UnmarshalResetRequest(req)
@@ -289,6 +297,7 @@ func (h *Handlers) Reset() func(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
+//return function that triggers wish cash payment workflow
 func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		body, _ := ioutil.ReadAll(req.Body)

@@ -17,16 +17,19 @@ import (
 )
 
 type (
+	// WishCashPaymentWorkflow config and clients
 	WishCashPaymentWorkflow struct {
 		Config     *config.TemporalClientConfig
 		Clients    *clients.Clients
 		Activities *WishCashPaymentActivities
 	}
+	// WishCashPaymentActivities
 	WishCashPaymentActivities struct {
 		Clients *clients.Clients
 	}
 )
 
+// create wish cash payment workflow
 func NewWishCashPaymentWorkflow(config *config.TemporalClientConfig, clients *clients.Clients) *WishCashPaymentWorkflow {
 	return &WishCashPaymentWorkflow{
 		Config:  config,
@@ -37,6 +40,7 @@ func NewWishCashPaymentWorkflow(config *config.TemporalClientConfig, clients *cl
 	}
 }
 
+// create wish cash order request
 func (a *WishCashPaymentActivities) WishCashPaymentCreateOrder(ctx context.Context, input interface{}) (interface{}, error) {
 	objInput := &models.WishCashPaymentWorkflowContext{}
 	err := GetInputObject(input, objInput)
@@ -64,6 +68,7 @@ func (a *WishCashPaymentActivities) WishCashPaymentCreateOrder(ctx context.Conte
 	return response, nil
 }
 
+// create request to clear cart
 func (a *WishCashPaymentActivities) WishCashPaymentClearCart(ctx context.Context, input interface{}) (interface{}, error) {
 	objInput := &models.WishCashPaymentCreateOrderResponse{}
 	err := GetInputObject(input, objInput)
@@ -92,6 +97,7 @@ func (a *WishCashPaymentActivities) WishCashPaymentClearCart(ctx context.Context
 	return response, nil
 }
 
+// create approve payment request
 func (a *WishCashPaymentActivities) WishCashPaymentApprovePayment(ctx context.Context, input interface{}) (interface{}, error) {
 	objInput := &models.WishCashPaymentClearCartResponse{}
 	err := GetInputObject(input, objInput)
@@ -120,6 +126,7 @@ func (a *WishCashPaymentActivities) WishCashPaymentApprovePayment(ctx context.Co
 	return response, nil
 }
 
+// create decline payent request
 func (a *WishCashPaymentActivities) WishCashPaymentDeclinePayment(ctx context.Context, input interface{}) (interface{}, error) {
 	objInput := &models.WishCashPaymentCreateOrderResponse{}
 	err := GetInputObject(input, objInput)
@@ -147,6 +154,7 @@ func (a *WishCashPaymentActivities) WishCashPaymentDeclinePayment(ctx context.Co
 	return response, nil
 }
 
+// register workflow namespace
 func (w *WishCashPaymentWorkflow) Register() error {
 	if err := w.Clients.Temporal.RegisterNamespace(GetNamespace(), w.Config.Retention); err != nil {
 		return err
@@ -162,6 +170,7 @@ func (w *WishCashPaymentWorkflow) Register() error {
 	return nil
 }
 
+// execute wish cash payment workflow in code
 func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, input interface{}) (interface{}, error) {
 	c := w.Config.Activities
 	ctx = workflow.WithActivityOptions(ctx, workflow.ActivityOptions{
@@ -222,10 +231,12 @@ func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, 
 	return response, nil
 }
 
+// get workflow namespace
 func GetNamespace() string {
 	return path.Base(reflect.TypeOf(WishCashPaymentWorkflow{}).PkgPath())
 }
 
+// get activity map for workflow
 func GetActivityMap(w *WishCashPaymentWorkflow) map[string]func(ctx context.Context, input interface{}) (interface{}, error) {
 	activityMap := map[string]func(ctx context.Context, input interface{}) (interface{}, error){
 		"WishCashPaymentCreateOrder":    w.Activities.WishCashPaymentCreateOrder,
@@ -236,6 +247,7 @@ func GetActivityMap(w *WishCashPaymentWorkflow) map[string]func(ctx context.Cont
 	return activityMap
 }
 
+// unmarshal workflow input from interface to objects
 func GetInputObject(input interface{}, objInput interface{}) error {
 	data, _ := json.Marshal(input)
 	err := json.Unmarshal(data, &objInput)

@@ -1,4 +1,4 @@
-package wish_frontend
+package wishfrontend
 
 import (
 	"bytes"
@@ -10,11 +10,13 @@ import (
 	"github.com/ContextLogic/autobots/pkg/config"
 )
 
+// http client configged to talk to wish fe
 type WishFrontend struct {
 	Client *http.Client
 	Config *config.WishFrontendConfig
 }
 
+// creat a new fe client
 func New(config *config.WishFrontendConfig) *WishFrontend {
 	return &WishFrontend{
 		&http.Client{
@@ -24,6 +26,7 @@ func New(config *config.WishFrontendConfig) *WishFrontend {
 	}
 }
 
+// post request
 func (w *WishFrontend) Post(h http.Header, data []byte, uri string) ([]byte, error) {
 	url := fmt.Sprintf("http://%s/%s", w.Config.Host, uri)
 	req, err := http.NewRequest(http.MethodPost, url, bytes.NewBuffer(data))

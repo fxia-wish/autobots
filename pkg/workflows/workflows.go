@@ -8,12 +8,15 @@ import (
 )
 
 type (
+	// workflow map
 	Workflows map[string]Workflow
-	Workflow  interface {
+	// workflow interface
+	Workflow interface {
 		Register() error
 	}
 )
 
+// init workflow map
 func New(config *config.Config, clients *clients.Clients) Workflows {
 	return map[string]Workflow{
 		dummy.GetNamespace(): dummy.NewDummyWorkflow(
@@ -27,6 +30,7 @@ func New(config *config.Config, clients *clients.Clients) Workflows {
 	}
 }
 
+// register workflow
 func (w Workflows) Register() error {
 	for _, wf := range w {
 		err := wf.Register()

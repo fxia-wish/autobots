@@ -18,6 +18,7 @@ const (
 	ConfigEnv     = "CONFIG_ENVIRONMENT"
 )
 
+// client and service configurations
 type (
 	Env    string
 	Config struct {
@@ -84,6 +85,7 @@ type (
 	}
 )
 
+// init config from file
 func Init(env ...Env) (*Config, error) {
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.JSONFormatter{})
@@ -126,6 +128,7 @@ func Init(env ...Env) (*Config, error) {
 	return config, nil
 }
 
+// get env
 func GetEnvironment() Env {
 	if os.Getenv(ConfigEnv) == "" {
 		os.Setenv(ConfigEnv, "local")
