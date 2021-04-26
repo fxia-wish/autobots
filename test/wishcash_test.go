@@ -43,8 +43,7 @@ func (s *UnitTestSuite) AfterTest(suiteName, testName string) {
 }
 
 func TestUnitTestSuite(t *testing.T) {
-	t.Skip()
-	//suite.Run(t, new(UnitTestSuite))
+	suite.Run(t, new(UnitTestSuite))
 }
 
 func (s *UnitTestSuite) Test_Integration_Workflow() {

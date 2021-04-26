@@ -15,10 +15,11 @@ include:
     file: "/templates/job-go-lint/default.yml"
   - project: "contextlogic/includes"
     ref: master
-    file: "/templates/job-go-unit-test/default.yml"
-  - project: "contextlogic/includes"
-    ref: master
     file: "/templates/job-build-tag-and-deploy/default.yml"
+# disable unit test in gitlab since there is not ut yet    
+#  - project: "contextlogic/includes"
+#    ref: master
+#    file: "/templates/job-go-unit-test/default.yml"
 
 # Note for customized jobs, please use the Gitlab rules syntax instead of only/except.
 # Gitlab rules - https://docs.gitlab.com/ee/ci/yaml/#rules
