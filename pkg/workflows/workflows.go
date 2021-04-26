@@ -4,33 +4,33 @@ import (
 	"github.com/ContextLogic/autobots/pkg/clients"
 	"github.com/ContextLogic/autobots/pkg/config"
 	dummy "github.com/ContextLogic/autobots/pkg/workflows/dummy"
-	"github.com/ContextLogic/autobots/pkg/workflows/wish_cash_payment"
+	"github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment"
 )
 
 type (
-	// workflow map
+	// Workflows contains workflow map
 	Workflows map[string]Workflow
-	// workflow interface
+	// workflow interface definition
 	Workflow interface {
 		Register() error
 	}
 )
 
-// init workflow map
+// New init workflow map
 func New(config *config.Config, clients *clients.Clients) Workflows {
 	return map[string]Workflow{
 		dummy.GetNamespace(): dummy.NewDummyWorkflow(
 			config.Clients.Temporal.Clients[dummy.GetNamespace()],
 			clients,
 		),
-		wish_cash_payment.GetNamespace(): wish_cash_payment.NewWishCashPaymentWorkflow(
-			config.Clients.Temporal.Clients[wish_cash_payment.GetNamespace()],
+		wishcashpayment.GetNamespace(): wishcashpayment.NewWishCashPaymentWorkflow(
+			config.Clients.Temporal.Clients[wishcashpayment.GetNamespace()],
 			clients,
 		),
 	}
 }
 
-// register workflow
+// Register workflow
 func (w Workflows) Register() error {
 	for _, wf := range w {
 		err := wf.Register()

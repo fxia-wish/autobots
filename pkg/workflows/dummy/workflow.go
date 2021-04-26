@@ -20,20 +20,20 @@ import (
 )
 
 type (
-	// dummy workflow config and clients
+	// DummyWorkflow contains config and clients
 	DummyWorkflow struct {
 		Config     *config.TemporalClientConfig
 		Clients    *clients.Clients
 		Activities *DummyActivities
 	}
-	// dummy activit client and root
+	// DummyActivities contains client and root
 	DummyActivities struct {
 		Clients *clients.Clients
 		Root    string
 	}
 )
 
-// creat a dummy workflow
+// NewDummyWorkflow creat a dummy workflow
 func NewDummyWorkflow(config *config.TemporalClientConfig, clients *clients.Clients) *DummyWorkflow {
 	_, filename, _, _ := runtime.Caller(0)
 	return &DummyWorkflow{
@@ -46,7 +46,7 @@ func NewDummyWorkflow(config *config.TemporalClientConfig, clients *clients.Clie
 	}
 }
 
-// create dummy activities from profile
+// ReadProfile create dummy activities from profile
 func (a *DummyActivities) ReadProfile(path string) (map[string]string, error) {
 	profile, err := os.Open(path)
 	if err != nil {
@@ -60,7 +60,7 @@ func (a *DummyActivities) ReadProfile(path string) (map[string]string, error) {
 	return results, nil
 }
 
-// create dummy order
+// DummyCreateOrder create dummy order
 func (a *DummyActivities) DummyCreateOrder(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	profile, err := a.ReadProfile(path.Join(a.Root, "flags/order.json"))
 	if err != nil {
@@ -88,7 +88,7 @@ func (a *DummyActivities) DummyCreateOrder(ctx context.Context, order models.Ord
 	}
 }
 
-// approve payment for dummy order
+// DummyApprovePayment approve payment for dummy order
 func (a *DummyActivities) DummyApprovePayment(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	profile, err := a.ReadProfile(path.Join(a.Root, "flags/payment.json"))
 	if err != nil {
@@ -116,7 +116,7 @@ func (a *DummyActivities) DummyApprovePayment(ctx context.Context, order models.
 	}
 }
 
-// return dummy order shipping response
+// DummyShipping return dummy order shipping response
 func (a *DummyActivities) DummyShipping(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	profile, err := a.ReadProfile(path.Join(a.Root, "flags/shipping.json"))
 	if err != nil {
@@ -144,7 +144,7 @@ func (a *DummyActivities) DummyShipping(ctx context.Context, order models.Order)
 	}
 }
 
-// return dummy order shipped response
+// DummyShipped return dummy order shipped response
 func (a *DummyActivities) DummyShipped(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	a.Clients.Logger.WithField("Order", order).Info("==========shipped==========")
 	return &models.OrderResponse{
@@ -164,7 +164,7 @@ func (a *DummyActivities) DummyDeclineOrder(ctx context.Context, order models.Or
 	}, nil
 }
 
-// return dummy order refunded response
+// DummyRefundOrder return dummy order refunded response
 func (a *DummyActivities) DummyRefundOrder(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	a.Clients.Logger.WithField("Order", order).Info("==========calling refund service==========")
 	time.Sleep(time.Second * 5)
@@ -175,7 +175,7 @@ func (a *DummyActivities) DummyRefundOrder(ctx context.Context, order models.Ord
 	}, nil
 }
 
-// register dummy workflow activities
+// Register dummy workflow activities
 func (w *DummyWorkflow) Register() error {
 	if err := w.Clients.Temporal.RegisterNamespace(GetNamespace(), w.Config.Retention); err != nil {
 		return err
@@ -193,7 +193,7 @@ func (w *DummyWorkflow) Register() error {
 	return nil
 }
 
-// create dummy workflow
+// DummyWorkflow creation
 func (w *DummyWorkflow) DummyWorkflow(ctx workflow.Context, input interface{}) (interface{}, error) {
 	data, _ := json.Marshal(input)
 	order := models.Order{}
@@ -244,7 +244,7 @@ func (w *DummyWorkflow) DummyWorkflow(ctx workflow.Context, input interface{}) (
 	return response, nil
 }
 
-// get dummy workflow namespace
+// GetNamespace return dummy workflow namespace
 func GetNamespace() string {
 	return path.Base(reflect.TypeOf(DummyWorkflow{}).PkgPath())
 }

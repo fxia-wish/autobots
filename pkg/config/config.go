@@ -12,21 +12,26 @@ import (
 )
 
 const (
-	Dev       Env = "dev"
-	Ec2       Env = "ec2"
-	Local     Env = "local"
-	ConfigEnv     = "CONFIG_ENVIRONMENT"
+	// Dev env
+	Dev Env = "dev"
+	// Ec2 env
+	Ec2 Env = "ec2"
+	// Local env
+	Local Env = "local"
+	// ConfigEnv env
+	ConfigEnv = "CONFIG_ENVIRONMENT"
 )
 
-// client and service configurations
 type (
-	Env    string
+	// Env string
+	Env string
+	// Config collection
 	Config struct {
 		Root    string
 		Service *ServiceConfig
 		Clients *ClientsConfig
 	}
-
+	// ServiceConfig
 	ServiceConfig struct {
 		ServiceName     string
 		ShutDownTimeOut time.Duration
@@ -40,52 +45,53 @@ type (
 		}
 	}
 
+	// ClientsConfig
 	ClientsConfig struct {
 		Logger       *LoggerConfig
 		Temporal     *TemporalConfig
 		WishFrontend *WishFrontendConfig
 	}
-
+	//TemporalConfig
 	TemporalConfig struct {
 		TaskQueue       string
 		TaskQueuePrefix string
 		HostPort        string
 		Clients         map[string]*TemporalClientConfig
 	}
-
+	//TemporalClientConfig
 	TemporalClientConfig struct {
 		Activities *ActivitiesConfig
 		Retention  int
 		Worker     *WorkerConfig
 	}
-
+	//ActivitiesConfig
 	ActivitiesConfig struct {
 		StartToCloseTimeout int
 		RetryPolicy         *RetryPolicyConfig
 	}
-
+	//RetryPolicyConfig
 	RetryPolicyConfig struct {
 		InitialInterval    int
 		BackoffCoefficient float64
 		MaximumInterval    int
 		MaximumAttempts    int32
 	}
-
+	//WorkerConfig
 	WorkerConfig struct {
 		MaxConcurrentActivityTaskPollers int
 	}
-
+	//LoggerConfig
 	LoggerConfig struct {
 		Level string
 	}
-
+	//WishFrontendConfig
 	WishFrontendConfig struct {
 		Host    string
 		Timeout int
 	}
 )
 
-// init config from file
+// Init config from file
 func Init(env ...Env) (*Config, error) {
 	logger := logrus.New()
 	logger.SetFormatter(&logrus.JSONFormatter{})
@@ -128,7 +134,7 @@ func Init(env ...Env) (*Config, error) {
 	return config, nil
 }
 
-// get env
+// GetEnvironment
 func GetEnvironment() Env {
 	if os.Getenv(ConfigEnv) == "" {
 		os.Setenv(ConfigEnv, "local")
