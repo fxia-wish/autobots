@@ -1,4 +1,4 @@
-package dummy
+package dummies
 
 import (
 	"context"
@@ -153,7 +153,7 @@ func (a *DummyActivities) DummyShipped(ctx context.Context, order models.Order) 
 	}, nil
 }
 
-// return dummy order declined response
+// DummyDeclineOrder return dummy order declined response
 func (a *DummyActivities) DummyDeclineOrder(ctx context.Context, order models.Order) (*models.OrderResponse, error) {
 	a.Clients.Logger.WithField("Order", order).Info("==========calling order declining service==========")
 	time.Sleep(time.Second * 5)

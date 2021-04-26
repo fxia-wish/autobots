@@ -1,4 +1,4 @@
-package wishcashpayment
+package wishcashpayments
 
 import (
 	"context"

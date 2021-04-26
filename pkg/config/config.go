@@ -134,7 +134,7 @@ func Init(env ...Env) (*Config, error) {
 	return config, nil
 }
 
-// GetEnvironment
+// GetEnvironment from configured env
 func GetEnvironment() Env {
 	if os.Getenv(ConfigEnv) == "" {
 		os.Setenv(ConfigEnv, "local")

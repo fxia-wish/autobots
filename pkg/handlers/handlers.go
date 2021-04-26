@@ -13,10 +13,9 @@ import (
 	"github.com/ContextLogic/autobots/pkg/clients"
 	"github.com/ContextLogic/autobots/pkg/config"
 	"github.com/ContextLogic/autobots/pkg/workflows"
-	"github.com/ContextLogic/autobots/pkg/workflows/dummy"
+	dummies "github.com/ContextLogic/autobots/pkg/workflows/dummy"
 	dummy_models "github.com/ContextLogic/autobots/pkg/workflows/dummy/models"
-	"github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment"
-	"github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment/models"
+	wishcashpayments "github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment"
 	wishcashpayment_models "github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment/models"
 	s "github.com/ContextLogic/go-base-service/pkg/service"
 	"github.com/pborman/uuid"
@@ -115,13 +114,13 @@ func (h *Handlers) PlaceOrderSync() func(w http.ResponseWriter, req *http.Reques
 			return
 		}
 
-		we, err := h.Clients.Temporal.DefaultClients[dummy.GetNamespace()].Client.ExecuteWorkflow(
+		we, err := h.Clients.Temporal.DefaultClients[dummies.GetNamespace()].Client.ExecuteWorkflow(
 			context.Background(),
 			client.StartWorkflowOptions{
-				ID:        strings.Join([]string{dummy.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
-				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, dummy.GetNamespace()),
+				ID:        strings.Join([]string{dummies.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
+				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, dummies.GetNamespace()),
 			},
-			h.Workflows[dummy.GetNamespace()].(*dummy.DummyWorkflow).DummyWorkflow,
+			h.Workflows[dummies.GetNamespace()].(*dummies.DummyWorkflow).DummyWorkflow,
 			order,
 		)
 		if err != nil {
@@ -161,13 +160,13 @@ func (h *Handlers) PlaceOrderAsync() func(w http.ResponseWriter, req *http.Reque
 			return
 		}
 
-		we, err := h.Clients.Temporal.DefaultClients[dummy.GetNamespace()].Client.ExecuteWorkflow(
+		we, err := h.Clients.Temporal.DefaultClients[dummies.GetNamespace()].Client.ExecuteWorkflow(
 			context.Background(),
 			client.StartWorkflowOptions{
-				ID:        strings.Join([]string{dummy.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
-				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, dummy.GetNamespace()),
+				ID:        strings.Join([]string{dummies.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
+				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, dummies.GetNamespace()),
 			},
-			h.Workflows[dummy.GetNamespace()].(*dummy.DummyWorkflow).DummyWorkflow,
+			h.Workflows[dummies.GetNamespace()].(*dummies.DummyWorkflow).DummyWorkflow,
 			order,
 		)
 		if err != nil {
@@ -201,7 +200,7 @@ func (h *Handlers) Shipped() func(w http.ResponseWriter, req *http.Request) {
 		histories, err := h.Clients.Temporal.WorkflowServiceClient.GetWorkflowExecutionHistory(
 			context.Background(),
 			&ws.GetWorkflowExecutionHistoryRequest{
-				Namespace: dummy.GetNamespace(),
+				Namespace: dummies.GetNamespace(),
 				Execution: &common.WorkflowExecution{
 					WorkflowId: rr.WorkflowID,
 					RunId:      rr.RunID,
@@ -222,9 +221,9 @@ func (h *Handlers) Shipped() func(w http.ResponseWriter, req *http.Request) {
 			}
 		}
 
-		err = h.Clients.Temporal.DefaultClients[dummy.GetNamespace()].Client.CompleteActivityByID(
+		err = h.Clients.Temporal.DefaultClients[dummies.GetNamespace()].Client.CompleteActivityByID(
 			context.Background(),
-			dummy.GetNamespace(),
+			dummies.GetNamespace(),
 			rr.WorkflowID,
 			rr.RunID,
 			rr.ActivityID,
@@ -254,7 +253,7 @@ func (h *Handlers) Reset() func(w http.ResponseWriter, req *http.Request) {
 		histories, err := h.Clients.Temporal.WorkflowServiceClient.GetWorkflowExecutionHistory(
 			context.Background(),
 			&ws.GetWorkflowExecutionHistoryRequest{
-				Namespace: dummy.GetNamespace(),
+				Namespace: dummies.GetNamespace(),
 				Execution: &common.WorkflowExecution{
 					WorkflowId: rr.WorkflowID,
 					RunId:      rr.RunID,
@@ -279,7 +278,7 @@ func (h *Handlers) Reset() func(w http.ResponseWriter, req *http.Request) {
 		_, err = h.Clients.Temporal.WorkflowServiceClient.ResetWorkflowExecution(
 			context.Background(),
 			&ws.ResetWorkflowExecutionRequest{
-				Namespace: dummy.GetNamespace(),
+				Namespace: dummies.GetNamespace(),
 				WorkflowExecution: &common.WorkflowExecution{
 					WorkflowId: rr.WorkflowID,
 					RunId:      rr.RunID,
@@ -305,19 +304,19 @@ func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.
 		body, _ := ioutil.ReadAll(req.Body)
 		defer req.Body.Close()
 
-		data := &models.WishCashPaymentWorkflowContext{
+		data := &wishcashpayment_models.WishCashPaymentWorkflowContext{
 			Header: req.Header,
 			Body:   []byte(body),
 		}
 
 		h.Clients.Logger.Info("workflow execution triggered")
-		we, err := h.Clients.Temporal.DefaultClients[wishcashpayment.GetNamespace()].Client.ExecuteWorkflow(
+		we, err := h.Clients.Temporal.DefaultClients[wishcashpayments.GetNamespace()].Client.ExecuteWorkflow(
 			context.Background(),
 			client.StartWorkflowOptions{
-				ID:        strings.Join([]string{wishcashpayment.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
-				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, wishcashpayment.GetNamespace()),
+				ID:        strings.Join([]string{wishcashpayments.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
+				TaskQueue: fmt.Sprintf("%s_%s", h.Config.Clients.Temporal.TaskQueuePrefix, wishcashpayments.GetNamespace()),
 			},
-			h.Workflows[wishcashpayment.GetNamespace()].(*wishcashpayment.WishCashPaymentWorkflow).WishCashPaymentWorkflow,
+			h.Workflows[wishcashpayments.GetNamespace()].(*wishcashpayments.WishCashPaymentWorkflow).WishCashPaymentWorkflow,
 			data,
 		)
 		if err != nil {

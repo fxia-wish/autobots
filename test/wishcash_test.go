@@ -64,8 +64,8 @@ func (s *UnitTestSuite) Test_Integration_Workflow() {
 	)
 
 	_, filename, _, _ := runtime.Caller(0)
-	wp := path.Join(path.Dir(filename), "../pkg/workflows/wish_cash_payment/workflows.json")
-	c, err := cadencepkg.New(temporal.Options{HostPort: config.Clients.Temporal.HostPort, Namespace: wish_cash_payment.GetNamespace()})
+	wp := path.Join(path.Dir(filename), "../pkg/workflows/wishcashpayment/workflows.json")
+	c, err := cadencepkg.New(temporal.Options{HostPort: config.Clients.Temporal.HostPort, Namespace: wishcashpayment.GetNamespace()})
 	if err != nil {
 		panic(err)
 	}
@@ -97,14 +97,14 @@ func (s *UnitTestSuite) Test_Integration_Workflow() {
 	instance, err := c.ExecuteWorkflow(
 		context.Background(),
 		temporal.StartWorkflowOptions{
-			ID:        strings.Join([]string{wish_cash_payment.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
+			ID:        strings.Join([]string{wishcashpayment.GetNamespace(), strconv.Itoa(int(time.Now().Unix()))}, "_"),
 			TaskQueue: config.Clients.Temporal.TaskQueuePrefix + "_dsl",
 		},
 		"WishCashPaymentWorkflow",
 		data,
 	)
 
-	response := &wishcashpayment_models.WishCashPaymentResponse{}
+	response := &models.WishCashPaymentResponse{}
 	err = instance.Get(context.Background(), &response)
 	s.NoError(err)
 
