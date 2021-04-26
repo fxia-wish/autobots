@@ -18,9 +18,8 @@ import (
 
 	"github.com/ContextLogic/autobots/pkg/clients"
 	"github.com/ContextLogic/autobots/pkg/config"
-	"github.com/ContextLogic/autobots/pkg/workflows/wish_cash_payment"
-	"github.com/ContextLogic/autobots/pkg/workflows/wish_cash_payment/models"
-	wish_cash_payment_models "github.com/ContextLogic/autobots/pkg/workflows/wish_cash_payment/models"
+	"github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment"
+	"github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment/models"
 
 	cadencepkg "github.com/ContextLogic/cadence/pkg"
 	"github.com/sirupsen/logrus"
@@ -59,8 +58,8 @@ func (s *UnitTestSuite) Test_Integration_Workflow() {
 		panic(err)
 	}
 
-	cashPaymentWorkflow := wish_cash_payment.NewWishCashPaymentWorkflow(
-		config.Clients.Temporal.Clients[wish_cash_payment.GetNamespace()],
+	cashPaymentWorkflow := wishcashpayment.NewWishCashPaymentWorkflow(
+		config.Clients.Temporal.Clients[wishcashpayment.GetNamespace()],
 		clients,
 	)
 
@@ -71,7 +70,7 @@ func (s *UnitTestSuite) Test_Integration_Workflow() {
 		panic(err)
 	}
 
-	activities := wish_cash_payment.GetActivityMap(cashPaymentWorkflow)
+	activities := wishcashpayment.GetActivityMap(cashPaymentWorkflow)
 	workerOptions := map[string]worker.Options{
 		// queue: worker_options
 		config.Clients.Temporal.TaskQueuePrefix + "_dsl": worker.Options{},
@@ -105,13 +104,13 @@ func (s *UnitTestSuite) Test_Integration_Workflow() {
 		data,
 	)
 
-	response := &wish_cash_payment_models.WishCashPaymentResponse{}
+	response := &wishcashpayment_models.WishCashPaymentResponse{}
 	err = instance.Get(context.Background(), &response)
 	s.NoError(err)
 
 }
 
-func AddCart(wf *wish_cash_payment.WishCashPaymentWorkflow, h http.Header) error {
+func AddCart(wf *wishcashpayment.WishCashPaymentWorkflow, h http.Header) error {
 	params := url.Values{}
 	params.Add("_xsrf", `1`)
 	params.Add("product_id", `5c4a04e0e6a1c633c8876229`)

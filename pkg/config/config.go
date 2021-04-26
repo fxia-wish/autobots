@@ -31,7 +31,7 @@ type (
 		Service *ServiceConfig
 		Clients *ClientsConfig
 	}
-	// ServiceConfig
+	// ServiceConfig contains service related configuration
 	ServiceConfig struct {
 		ServiceName     string
 		ShutDownTimeOut time.Duration
@@ -45,46 +45,46 @@ type (
 		}
 	}
 
-	// ClientsConfig
+	// ClientsConfig contains autobot related configuration
 	ClientsConfig struct {
 		Logger       *LoggerConfig
 		Temporal     *TemporalConfig
 		WishFrontend *WishFrontendConfig
 	}
-	//TemporalConfig
+	//TemporalConfig  contains workflow related configuration
 	TemporalConfig struct {
 		TaskQueue       string
 		TaskQueuePrefix string
 		HostPort        string
 		Clients         map[string]*TemporalClientConfig
 	}
-	//TemporalClientConfig
+	//TemporalClientConfig contains temporal client related configuration
 	TemporalClientConfig struct {
 		Activities *ActivitiesConfig
 		Retention  int
 		Worker     *WorkerConfig
 	}
-	//ActivitiesConfig
+	//ActivitiesConfig contains activity related configuration
 	ActivitiesConfig struct {
 		StartToCloseTimeout int
 		RetryPolicy         *RetryPolicyConfig
 	}
-	//RetryPolicyConfig
+	//RetryPolicyConfig contains retry related configuration
 	RetryPolicyConfig struct {
 		InitialInterval    int
 		BackoffCoefficient float64
 		MaximumInterval    int
 		MaximumAttempts    int32
 	}
-	//WorkerConfig
+	//WorkerConfig contains worker related configuration
 	WorkerConfig struct {
 		MaxConcurrentActivityTaskPollers int
 	}
-	//LoggerConfig
+	//LoggerConfig contains logging related configuration
 	LoggerConfig struct {
 		Level string
 	}
-	//WishFrontendConfig
+	//WishFrontendConfig contains wish fe related configuration
 	WishFrontendConfig struct {
 		Host    string
 		Timeout int

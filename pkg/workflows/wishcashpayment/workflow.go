@@ -17,13 +17,13 @@ import (
 )
 
 type (
-	// WishCashPaymentWorkflow config and clients
+	// WishCashPaymentWorkflow contains wish cash related config and clients
 	WishCashPaymentWorkflow struct {
 		Config     *config.TemporalClientConfig
 		Clients    *clients.Clients
 		Activities *WishCashPaymentActivities
 	}
-	// WishCashPaymentActivities
+	// WishCashPaymentActivities contains wish cash related clients
 	WishCashPaymentActivities struct {
 		Clients *clients.Clients
 	}
@@ -231,7 +231,7 @@ func (w *WishCashPaymentWorkflow) WishCashPaymentWorkflow(ctx workflow.Context, 
 	return response, nil
 }
 
-// GetNamespace
+// GetNamespace of wish cash workflow
 func GetNamespace() string {
 	return path.Base(reflect.TypeOf(WishCashPaymentWorkflow{}).PkgPath())
 }

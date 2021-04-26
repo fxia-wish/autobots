@@ -17,7 +17,7 @@ import (
 	dummy_models "github.com/ContextLogic/autobots/pkg/workflows/dummy/models"
 	"github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment"
 	"github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment/models"
-	wish_cash_payment_models "github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment/models"
+	wishcashpayment_models "github.com/ContextLogic/autobots/pkg/workflows/wishcashpayment/models"
 	s "github.com/ContextLogic/go-base-service/pkg/service"
 	"github.com/pborman/uuid"
 	"github.com/sirupsen/logrus"
@@ -69,7 +69,7 @@ func (h *Handlers) Unmarshal(req *http.Request) (*dummy_models.Order, error) {
 	return &order, nil
 }
 
-// UnmarshalResetRequest
+// UnmarshalResetRequest unmarshal reset request
 func (h *Handlers) UnmarshalResetRequest(req *http.Request) (*dummy_models.ResetRequest, error) {
 	b, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
@@ -84,7 +84,7 @@ func (h *Handlers) UnmarshalResetRequest(req *http.Request) (*dummy_models.Reset
 	return &r, nil
 }
 
-//UnmarshalShippedNotificationRequest
+//UnmarshalShippedNotificationRequest unmarshal ship notification
 func (h *Handlers) UnmarshalShippedNotificationRequest(req *http.Request) (*dummy_models.ShippedNotificationRequest, error) {
 	b, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
@@ -106,7 +106,7 @@ func (h *Handlers) Health() func(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// PlaceOrderSync
+// PlaceOrderSync send place order request in sync
 func (h *Handlers) PlaceOrderSync() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		order, err := h.Unmarshal(req)
@@ -152,7 +152,7 @@ func (h *Handlers) PlaceOrderSync() func(w http.ResponseWriter, req *http.Reques
 	}
 }
 
-// PlaceOrderAsync
+// PlaceOrderAsync send place order request async
 func (h *Handlers) PlaceOrderAsync() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		order, err := h.Unmarshal(req)
@@ -325,7 +325,7 @@ func (h *Handlers) StartWishCashPayment() func(w http.ResponseWriter, req *http.
 			return
 		}
 
-		response := &wish_cash_payment_models.WishCashPaymentResponse{}
+		response := &wishcashpayment_models.WishCashPaymentResponse{}
 		err = we.Get(context.Background(), &response)
 		if err != nil {
 			http.Error(w, err.Error(), 500)

@@ -58,7 +58,7 @@ type (
 		Code          int    `json:"code"`
 		TransactionID string `json:"transaction_id"`
 	}
-	//WishCashPaymentResponseData data model
+	//WishCashPaymentResponse data model
 	WishCashPaymentResponse struct {
 		Context    WishCashPaymentWorkflowContext `json:"wishCashPaymentWorkflowContext"`
 		Data       WishCashPaymentResponseData    `json:"data"`

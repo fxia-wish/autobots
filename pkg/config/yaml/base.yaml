@@ -25,7 +25,7 @@ clients:
         retention: 1 # days
         worker:
           maxconcurrentactivitytaskpollers: 1
-      wish_cash_payment:
+      wishcashpayment:
         activities:
           starttoclosetimeout: 10 # minutes
           retrypolicy:
