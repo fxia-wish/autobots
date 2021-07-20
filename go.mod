@@ -3,6 +3,7 @@ module github.com/ContextLogic/autobots
 go 1.15
 
 require (
+	github.com/ContextLogic/authn v1.0.5
 	github.com/ContextLogic/cadence v0.0.0-20210424021832-f5a04d60b70c
 	github.com/ContextLogic/go-base-service v0.0.6
 	github.com/pborman/uuid v1.2.1

@@ -2,7 +2,10 @@ package temporal
 
 import (
 	"context"
+	"crypto/tls"
+	"crypto/x509"
 	"fmt"
+	"io/ioutil"
 	"time"
 
 	"github.com/ContextLogic/autobots/pkg/config"
@@ -10,6 +13,7 @@ import (
 	"go.temporal.io/sdk/client"
 	"go.temporal.io/sdk/worker"
 	"google.golang.org/grpc"
+	"google.golang.org/grpc/credentials"
 )
 
 type (
@@ -32,9 +36,41 @@ func New(config *config.TemporalConfig) (t *Temporal, err error) {
 		DefaultClients: make(map[string]DefaultClients),
 	}
 
+	ClientCertFile := "/Users/bgao/Downloads/web_dev_temporal_i_wish_com.crt"
+	ClientCertPrivateKey := "/Users/bgao/Downloads/private.crt"
+	ServerName := "internode.dev.temporal.i.wish.com"
+	clientCert, err := tls.LoadX509KeyPair(ClientCertFile, ClientCertPrivateKey)
+	if err != nil {
+		return nil, err
+	}
+
+	tlsCACertFile := "/Users/bgao/Downloads/DigiCertCA.crt"
+	var rpool *x509.CertPool
+	pemBytes, err := ioutil.ReadFile(tlsCACertFile)
+	if err != nil {
+		return nil, err
+	}
+
+	rpool = x509.NewCertPool()
+	rpool.AppendCertsFromPEM(pemBytes)
+	connOption := client.ConnectionOptions{
+		TLS: &tls.Config{
+			Certificates: []tls.Certificate{clientCert},
+			ServerName:   ServerName,
+			RootCAs:      rpool,
+		},
+		DisableHealthCheck: true,
+	}
+
+	headerProvider := &AuthProvider{}
 	for k, v := range config.Clients {
 		c, err := client.NewClient(
-			client.Options{HostPort: config.HostPort, Namespace: k},
+			client.Options{
+				HostPort:          config.HostPort,
+				Namespace:         k,
+				ConnectionOptions: connOption,
+				HeadersProvider:   headerProvider,
+			},
 		)
 		if err != nil {
 			return nil, err
@@ -45,14 +81,17 @@ func New(config *config.TemporalConfig) (t *Temporal, err error) {
 		t.DefaultClients[k] = DefaultClients{c, w}
 	}
 
-	conn, err := grpc.Dial(config.HostPort, grpc.WithInsecure())
+	conn, err := grpc.Dial(config.HostPort, grpc.WithTransportCredentials(credentials.NewTLS(connOption.TLS)))
 	if err != nil {
 		return nil, err
 	}
 	t.WorkflowServiceClient = workflowservice.NewWorkflowServiceClient(conn)
 
 	t.NamespaceClient, err = client.NewNamespaceClient(
-		client.Options{HostPort: config.HostPort},
+		client.Options{
+			HostPort:          config.HostPort,
+			ConnectionOptions: connOption,
+		},
 	)
 	if err != nil {
 		return nil, err
