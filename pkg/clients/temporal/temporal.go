@@ -91,6 +91,7 @@ func New(config *config.TemporalConfig) (t *Temporal, err error) {
 		client.Options{
 			HostPort:          config.HostPort,
 			ConnectionOptions: connOption,
+			HeadersProvider:   headerProvider,
 		},
 	)
 	if err != nil {
