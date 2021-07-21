@@ -14,6 +14,10 @@ import (
 const (
 	// Dev env
 	Dev Env = "dev"
+	// Stage env
+	Stage Env = "stage"
+	// Prod env
+	Prod Env = "prod"
 	// Ec2 env
 	Ec2 Env = "ec2"
 	// Local env
@@ -55,6 +59,7 @@ type (
 	TemporalConfig struct {
 		TaskQueue       string
 		TaskQueuePrefix string
+		TLSServerName   string
 		HostPort        string
 		Clients         map[string]*TemporalClientConfig
 	}
@@ -143,6 +148,10 @@ func GetEnvironment() Env {
 	switch os.Getenv(ConfigEnv) {
 	case "dev":
 		return Dev
+	case "stage":
+		return Stage
+	case "prod":
+		return Prod
 	case "ec2":
 		return Ec2
 	case "local":

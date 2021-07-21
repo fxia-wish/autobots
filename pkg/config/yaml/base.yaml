@@ -11,7 +11,8 @@ clients:
   logger:
     level: info
   temporal:
-    taskqueueprefix: TASK_QUEUE
+    taskqueueprefix: TASK_QUEUE_Local
+    tlsservername: internode.dev.temporal.i.wish.com
     hostport: temporal-fe.service.consul:7233
     clients:
       dummy:

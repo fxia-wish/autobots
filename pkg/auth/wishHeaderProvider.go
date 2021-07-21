@@ -1,45 +1,65 @@
-package authetication
+package auth
 
 import (
 	"context"
-	"flag"
 	"fmt"
+	"time"
 
 	"github.com/ContextLogic/authn/pkg/authn"
-	"github.com/ContextLogic/authn/pkg/common"
+	"github.com/ContextLogic/autobots/pkg/config"
 )
 
+//WishAuthHeadersProvider interface
 type WishAuthHeadersProvider interface {
+	//GetHeaders func
 	GetHeaders(ctx context.Context) (map[string]string, error)
 }
 
-type AuthProvider struct {
+//Provider struct
+type Provider struct {
 }
 
-func (p *AuthProvider) GetHeaders(ctx context.Context) (map[string]string, error) {
-	env := flag.String("env", string(common.EnvLocal), "environment")
-	isTest := flag.Bool("test", false, "a flag for unit test, test token issued if true")
-	flag.Parse()
+//GetHeaders use authn library to get auth token
+func (p *Provider) GetHeaders(ctx context.Context) (map[string]string, error) {
+	var token string
+	var err error
+	env := string(config.GetEnvironment())
 
-	var (
-		requester *authn.TokenRequester
-		err       error
-	)
-	cfg, err := authn.NewKubernetesRequesterConfig(common.Environment(*env), *isTest)
-	if err != nil {
-		fmt.Printf("failed to create kubernetes requester config: %v\n", err)
-	}
-	requester, err = authn.NewKubernetesRequester(cfg)
-	if err != nil {
-		fmt.Printf("failed to construct requester: %v\n", err)
-	}
+	if env == "local" {
+		t := &authn.K8sIDTokenJSON{
+			Issuer:   "local autobots",
+			Audience: "test user",
+			Duration: 10 * time.Hour,
+			Kid:      "testk8s",
+			Subject:  "autobots",
+			Groups:   []string{"autobots"},
+		}
+		token, err = authn.NewTestToken(t.GetTokenMap())
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		var requester *authn.TokenRequester
+		env, err := authn.GetEnvName()
+		if err != nil {
+			fmt.Printf("failed to retrieve env name: %v\n", err)
+		}
 
-	token, err := requester.GetToken(context.Background())
-	if err != nil {
-		panic(err)
+		cfg, err := authn.NewKubernetesRequesterConfig(env, false)
+		if err != nil {
+			fmt.Printf("failed to create kubernetes requester config: %v\n", err)
+		}
+
+		requester, err = authn.NewKubernetesRequester(cfg)
+		if err != nil {
+			fmt.Printf("failed to construct requester: %v\n", err)
+		}
+
+		token, err = requester.GetToken(context.Background())
+		if err != nil {
+			fmt.Printf("failed to get token from requester: %v\n", err)
+		}
+		_, token, err = authn.UnwrapToken(token)
 	}
-	fmt.Printf("got token: %v\n", token)
-	var ret map[string]string
-	ret["Authorization"] = token
-	return ret, nil
+	return map[string]string{"authorization": token, "authorization-extras": env}, nil
 }

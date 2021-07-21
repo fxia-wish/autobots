@@ -3,11 +3,10 @@ package temporal
 import (
 	"context"
 	"crypto/tls"
-	"crypto/x509"
 	"fmt"
-	"io/ioutil"
 	"time"
 
+	"github.com/ContextLogic/autobots/pkg/auth"
 	"github.com/ContextLogic/autobots/pkg/config"
 	"go.temporal.io/api/workflowservice/v1"
 	"go.temporal.io/sdk/client"
@@ -36,33 +35,15 @@ func New(config *config.TemporalConfig) (t *Temporal, err error) {
 		DefaultClients: make(map[string]DefaultClients),
 	}
 
-	ClientCertFile := "/Users/bgao/Downloads/web_dev_temporal_i_wish_com.crt"
-	ClientCertPrivateKey := "/Users/bgao/Downloads/private.crt"
-	ServerName := "internode.dev.temporal.i.wish.com"
-	clientCert, err := tls.LoadX509KeyPair(ClientCertFile, ClientCertPrivateKey)
-	if err != nil {
-		return nil, err
-	}
-
-	tlsCACertFile := "/Users/bgao/Downloads/DigiCertCA.crt"
-	var rpool *x509.CertPool
-	pemBytes, err := ioutil.ReadFile(tlsCACertFile)
-	if err != nil {
-		return nil, err
-	}
-
-	rpool = x509.NewCertPool()
-	rpool.AppendCertsFromPEM(pemBytes)
 	connOption := client.ConnectionOptions{
 		TLS: &tls.Config{
-			Certificates: []tls.Certificate{clientCert},
-			ServerName:   ServerName,
-			RootCAs:      rpool,
+			ServerName: config.TLSServerName,
 		},
 		DisableHealthCheck: true,
 	}
 
-	headerProvider := &AuthProvider{}
+	headerProvider := &auth.Provider{}
+
 	for k, v := range config.Clients {
 		c, err := client.NewClient(
 			client.Options{

@@ -1,5 +1,6 @@
 clients:
   temporal:
     hostport: temporal-fe-dev.service.consul:7233
+    taskqueueprefix: TASK_QUEUE_Dev
   wishfrontend:
     host: wish-frontend-staging.service.consul:10001
