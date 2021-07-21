@@ -41,7 +41,7 @@ func (p *Provider) GetHeaders(ctx context.Context) (map[string]string, error) {
 			return nil, err
 		}
 	} else {
-		env := flag.String("env", string(common.EnvLocal), "environment")
+		env := flag.String("env", string(env), "environment")
 		isTest := flag.Bool("test", false, "a flag for unit test, test token issued if true")
 		flag.Parse()
 
