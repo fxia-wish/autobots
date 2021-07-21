@@ -11,14 +11,17 @@ import (
 	"github.com/ContextLogic/autobots/pkg/config"
 )
 
+//WishAuthHeadersProvider interface
 type WishAuthHeadersProvider interface {
+	//GetHeaders func
 	GetHeaders(ctx context.Context) (map[string]string, error)
 }
 
-type AuthProvider struct {
+//Provider struct
+type Provider struct {
 }
 
-func (p *AuthProvider) GetHeaders(ctx context.Context) (map[string]string, error) {
+func (p *Provider) GetHeaders(ctx context.Context) (map[string]string, error) {
 	var token string
 	var err error
 	env := string(config.GetEnvironment())

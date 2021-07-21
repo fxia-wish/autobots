@@ -54,7 +54,7 @@ func New(config *config.TemporalConfig) (t *Temporal, err error) {
 		DisableHealthCheck: true,
 	}
 
-	headerProvider := &auth.AuthProvider{}
+	headerProvider := &auth.Provider{}
 
 	for k, v := range config.Clients {
 		c, err := client.NewClient(
