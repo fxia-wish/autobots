@@ -35,21 +35,9 @@ func New(config *config.TemporalConfig) (t *Temporal, err error) {
 		DefaultClients: make(map[string]DefaultClients),
 	}
 
-	/*
-		tlsCACertFile := "/Users/bgao/Downloads/DigiCertCA.crt"
-		var rpool *x509.CertPool
-		pemBytes, err := ioutil.ReadFile(tlsCACertFile)
-		if err != nil {
-			return nil, err
-		}
-
-		rpool = x509.NewCertPool()
-		rpool.AppendCertsFromPEM(pemBytes)
-	*/
 	connOption := client.ConnectionOptions{
 		TLS: &tls.Config{
-			ServerName: "internode.dev.temporal.i.wish.com",
-			//RootCAs:    rpool,
+			ServerName: config.TLSServerName,
 		},
 		DisableHealthCheck: true,
 	}

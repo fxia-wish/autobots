@@ -59,6 +59,7 @@ type (
 	TemporalConfig struct {
 		TaskQueue       string
 		TaskQueuePrefix string
+		TLSServerName   string
 		HostPort        string
 		Clients         map[string]*TemporalClientConfig
 	}
