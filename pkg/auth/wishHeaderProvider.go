@@ -27,8 +27,8 @@ func (p *Provider) GetHeaders(ctx context.Context) (map[string]string, error) {
 
 	if env == "local" {
 		t := &authn.K8sIDTokenJSON{
-			Issuer:   "iss",
-			Audience: "aud",
+			Issuer:   "local autobots",
+			Audience: "test user",
 			Duration: 10 * time.Hour,
 			Kid:      "testk8s",
 			Subject:  "autobots",
@@ -57,11 +57,9 @@ func (p *Provider) GetHeaders(ctx context.Context) (map[string]string, error) {
 
 		token, err = requester.GetToken(context.Background())
 		if err != nil {
-			panic(err)
+			fmt.Printf("failed to get token from requester: %v\n", err)
 		}
-
 		_, token, err = authn.UnwrapToken(token)
 	}
-	fmt.Printf("got token: %s, env:%s\n", token, env)
 	return map[string]string{"authorization": token, "authorization-extras": env}, nil
 }
