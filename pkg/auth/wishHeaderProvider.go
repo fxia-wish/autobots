@@ -21,6 +21,7 @@ type WishAuthHeadersProvider interface {
 type Provider struct {
 }
 
+//GetHeaders use authn library to get auth token
 func (p *Provider) GetHeaders(ctx context.Context) (map[string]string, error) {
 	var token string
 	var err error
