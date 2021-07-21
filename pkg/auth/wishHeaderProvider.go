@@ -1,12 +1,14 @@
-package authetication
+package auth
 
 import (
 	"context"
 	"flag"
 	"fmt"
+	"time"
 
 	"github.com/ContextLogic/authn/pkg/authn"
 	"github.com/ContextLogic/authn/pkg/common"
+	"github.com/ContextLogic/autobots/pkg/config"
 )
 
 type WishAuthHeadersProvider interface {
@@ -17,29 +19,46 @@ type AuthProvider struct {
 }
 
 func (p *AuthProvider) GetHeaders(ctx context.Context) (map[string]string, error) {
-	env := flag.String("env", string(common.EnvLocal), "environment")
-	isTest := flag.Bool("test", false, "a flag for unit test, test token issued if true")
-	flag.Parse()
+	var token string
+	var err error
+	env := string(config.GetEnvironment())
 
-	var (
-		requester *authn.TokenRequester
-		err       error
-	)
-	cfg, err := authn.NewKubernetesRequesterConfig(common.Environment(*env), *isTest)
-	if err != nil {
-		fmt.Printf("failed to create kubernetes requester config: %v\n", err)
-	}
-	requester, err = authn.NewKubernetesRequester(cfg)
-	if err != nil {
-		fmt.Printf("failed to construct requester: %v\n", err)
-	}
+	if env == "local" {
+		t := &authn.K8sIDTokenJSON{
+			Issuer:   "iss",
+			Audience: "aud",
+			Duration: 10 * time.Hour,
+			Kid:      "testk8s",
+			Subject:  "autobots",
+			Groups:   []string{"autobots"},
+		}
+		token, err = authn.NewTestToken(t.GetTokenMap())
+		if err != nil {
+			return nil, err
+		}
+	} else {
+		env := flag.String("env", string(common.EnvLocal), "environment")
+		isTest := flag.Bool("test", false, "a flag for unit test, test token issued if true")
+		flag.Parse()
 
-	token, err := requester.GetToken(context.Background())
-	if err != nil {
-		panic(err)
+		var (
+			requester *authn.TokenRequester
+			err       error
+		)
+		cfg, err := authn.NewKubernetesRequesterConfig(common.Environment(*env), *isTest)
+		if err != nil {
+			fmt.Printf("failed to create kubernetes requester config: %v\n", err)
+		}
+		requester, err = authn.NewKubernetesRequester(cfg)
+		if err != nil {
+			fmt.Printf("failed to construct requester: %v\n", err)
+		}
+
+		token, err = requester.GetToken(context.Background())
+		if err != nil {
+			panic(err)
+		}
 	}
-	fmt.Printf("got token: %v\n", token)
-	var ret map[string]string
-	ret["Authorization"] = token
-	return ret, nil
+	fmt.Printf("got token: %s, env:%s\n", token, env)
+	return map[string]string{"authorization": token, "authorization-extras": env}, nil
 }
