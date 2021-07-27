@@ -1,7 +1,7 @@
 package models
 
 type (
-	// Signal detail
+	// SimpleSignal detail
 	SimpleSignal struct {
 		Namespace  string `json:"namespace"`
 		WorkflowID string `json:"workflow_id"`

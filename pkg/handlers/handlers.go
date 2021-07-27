@@ -107,7 +107,7 @@ func (h *Handlers) Health() func(w http.ResponseWriter, req *http.Request) {
 	}
 }
 
-// Unmarshal signal request
+// UnmarshalSignalRequest Unmarshal signal request
 func (h *Handlers) UnmarshalSignalRequest(req *http.Request) (*dummy_models.SimpleSignal, error) {
 	b, err := ioutil.ReadAll(req.Body)
 	defer req.Body.Close()
