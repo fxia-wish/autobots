@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -50,6 +51,7 @@ func New(config *config.Config, clients *clients.Clients, service *s.Service, wo
 	service.Mux.HandleFunc("/reset", h.Reset()).Methods("POST")
 	service.Mux.HandleFunc("/shipped", h.Shipped()).Methods("POST")
 	service.Mux.HandleFunc("/start-wish-cash-payment", h.StartWishCashPayment()).Methods("POST")
+	service.Mux.HandleFunc("/signal-workflow", h.SignalWorkflow()).Methods("POST")
 	return h
 }
 
@@ -102,6 +104,49 @@ func (h *Handlers) UnmarshalShippedNotificationRequest(req *http.Request) (*dumm
 func (h *Handlers) Health() func(w http.ResponseWriter, req *http.Request) {
 	return func(w http.ResponseWriter, req *http.Request) {
 		w.WriteHeader(http.StatusOK)
+	}
+}
+
+// UnmarshalSignalRequest Unmarshal signal request
+func (h *Handlers) UnmarshalSignalRequest(req *http.Request) (*dummy_models.SimpleSignal, error) {
+	b, err := ioutil.ReadAll(req.Body)
+	defer req.Body.Close()
+	if err != nil {
+		return nil, err
+	}
+	signal := dummy_models.SimpleSignal{}
+	err = json.Unmarshal(b, &signal)
+	if err != nil {
+		return nil, err
+	}
+	return &signal, nil
+}
+
+// SignalWorkflow get signal to specific workflow
+func (h *Handlers) SignalWorkflow() func(w http.ResponseWriter, req *http.Request) {
+	return func(w http.ResponseWriter, req *http.Request) {
+		signal, err := h.UnmarshalSignalRequest(req)
+		if err != nil {
+			http.Error(w, err.Error(), 500)
+			return
+		}
+
+		client, ok := h.Clients.Temporal.DefaultClients[signal.Namespace]
+		if !ok {
+			log.Fatalf("Fail to get client for namespace '%s'", signal.Namespace)
+			http.Error(w, "Fail to get client for namespace", 500)
+			return
+		}
+
+		err = client.Client.SignalWorkflow(context.Background(), signal.WorkflowID, signal.RunID, signal.Name, signal.Value)
+		if err != nil {
+			log.Fatalln("Error signaling client", err)
+			http.Error(w, err.Error(), 500)
+			return
+		}
+
+		w.WriteHeader(200)
+		json.NewEncoder(w).Encode("ok")
 	}
 }
 

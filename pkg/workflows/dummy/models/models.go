@@ -1,6 +1,15 @@
 package models
 
 type (
+	// SimpleSignal detail
+	SimpleSignal struct {
+		Namespace  string `json:"namespace"`
+		WorkflowID string `json:"workflow_id"`
+		RunID      string `json:"run_id"`
+		Name       string `json:"signal_name"`
+		Value      string `json:"signal_val"`
+	}
+
 	// Order detail
 	Order struct {
 		ProductID       string `json:"product_id"`

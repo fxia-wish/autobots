@@ -115,7 +115,6 @@ func Init(env ...Env) (*Config, error) {
 	for _, e := range env {
 		switch e {
 		case Dev:
-		case Ec2:
 		case Local:
 		default:
 			logger.Errorf("unsupported config env type")

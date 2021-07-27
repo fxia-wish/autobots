@@ -201,6 +201,15 @@ func (w *DummyWorkflow) DummyWorkflow(ctx workflow.Context, input interface{}) (
 	if err != nil {
 		return nil, err
 	}
+	var signalVal string
+	signalName := "testSignal"
+	signalChan := workflow.GetSignalChannel(ctx, signalName)
+
+	s := workflow.NewSelector(ctx)
+	s.AddReceive(signalChan, func(c workflow.ReceiveChannel, more bool) {
+		c.Receive(ctx, &signalVal)
+		workflow.GetLogger(ctx).Info("Received signal!", "Signal", signalName, "value", signalVal)
+	})
 
 	response := models.OrderResponse{}
 	c := w.Config.Activities
@@ -231,6 +240,8 @@ func (w *DummyWorkflow) DummyWorkflow(ctx workflow.Context, input interface{}) (
 		workflow.ExecuteActivity(ctx, w.Activities.DummyDeclineOrder, order).Get(ctx, nil)
 		return response, nil
 	}
+	s.Select(ctx)
+
 	err = workflow.ExecuteActivity(ctx, w.Activities.DummyShipping, order).Get(ctx, &response)
 	if err != nil {
 		return nil, err
